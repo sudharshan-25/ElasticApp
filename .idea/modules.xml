@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ElasticApp.iml" filepath="$PROJECT_DIR$/ElasticApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ElasticAppCore/ElasticAppCore.iml" filepath="$PROJECT_DIR$/ElasticAppCore/ElasticAppCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ElasticAppEar/ElasticAppEar.iml" filepath="$PROJECT_DIR$/ElasticAppEar/ElasticAppEar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ElasticAppWeb/ElasticAppWeb.iml" filepath="$PROJECT_DIR$/ElasticAppWeb/ElasticAppWeb.iml" />
+    </modules>
+  </component>
+</project>
