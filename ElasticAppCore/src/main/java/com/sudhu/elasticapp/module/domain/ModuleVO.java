@@ -1,4 +1,4 @@
-package com.sudhu.elasticapp.domain;
+package com.sudhu.elasticapp.module.domain;
 
 /**
  * Created by sudha on 01-Oct-16.

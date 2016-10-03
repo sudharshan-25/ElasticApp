@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url("../font/Roboto-Light.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+body{
+    font-family: Roboto;
+    font-size: 12pt;
+}
+
+header{
+    width: 100%;
+    height: 10%;
+}
+
+header > div#logo{
+    align-content: flex-start;
+    left:15%
+}
+header > div#appName{
+    left : 25%;
+}
+
+header > div#user{
+    align-content: flex-end;
+    left: 80%;
+}
+
+footer{
+    width: 100%;
+    height:5%;
+}
+footer > div#copyright{
+    left : 10%;
+}
+
+footer > div#credits{
+    left : 70%;
+}
+
+div#pagecontent{
+    width:100%;
+    overflow: scroll;
+    height:85%;
+}
+
