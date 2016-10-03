@@ -8,6 +8,7 @@ import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -32,6 +33,14 @@ public class ApplicationBeanContext extends WebMvcConfigurerAdapter {
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.ignoreAcceptHeader(true).defaultContentType(
                 MediaType.TEXT_HTML);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/scripts/**").addResourceLocations("/scripts/");
+        registry.addResourceHandler("/theme/**").addResourceLocations("/theme/");
+        registry.addResourceHandler("/font/**").addResourceLocations("/font/");
+        super.addResourceHandlers(registry);
     }
 
     @Bean
