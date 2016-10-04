@@ -1,0 +1,17 @@
+#homeContainer{
+    width:100%;
+    display: inline;
+}
+
+#newRequest{
+    min-width: 50%;
+    float: left;
+    background-color: cornsilk;
+    text-align: center;
+}
+
+#updateRequest{
+    min-width: 50%;
+    background-color: seashell;
+    text-align: center;
+}
