@@ -1,4 +1,4 @@
-package com.sudhu.elasticapp.module.controller;
+package com.sudhu.elasticapp.home.controller;
 
 import com.sudhu.elasticapp.common.constants.CommonConstants;
 import com.sudhu.elasticapp.module.domain.UserVO;
@@ -13,14 +13,12 @@ import javax.servlet.http.HttpServletResponse;
  * Created by sudha on 01-Oct-16.
  */
 @Controller
-public class ModuleController {
+public class HomeController {
 
     @RequestMapping("/")
     public ModelAndView goHome(HttpServletRequest request, HttpServletResponse response ){
         ModelAndView view = new ModelAndView(CommonConstants.HOME_PAGE);
-        UserVO userVO = new UserVO();
-        userVO.setUserName("Sudharshan");
-        view.addObject(CommonConstants.USER_VO, userVO);
+
 
         return view;
     }

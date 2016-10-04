@@ -16,14 +16,16 @@
 <body>
 
 <header>
-    <div id="logo">
-        <img src="#" alt="Logo">
-    </div>
-    <div id="appName">
-        Elastic Middleware Application
-    </div>
-    <div id="user">
-        ${requestScope.userVO.userName}
+    <div>
+        <div id="logo">
+            <img src="#" alt="Logo">
+        </div>
+        <div id="appName">
+            <h4>Elastic Middleware Application</h4>
+        </div>
+        <div id="user">
+            ${sessionScope.userVO.userName}
+        </div>
     </div>
 </header>
 <div id="pagecontent">
@@ -31,13 +33,14 @@
 </div>
 
 <footer>
-    <div id="copyright">
-        copyright - 2016
+    <div>
+        <div id="copyright">
+            copyright - 2016
+        </div>
+        <div id="credits">
+            Thanks to Bits pilani
+        </div>
     </div>
-    <div id="credits">
-        Thanks to Bits pilani
-    </div>
-
 </footer>
 
 </body>

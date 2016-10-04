@@ -16,29 +16,33 @@ header{
     height: 10%;
 }
 
-header > div#logo{
-    align-content: flex-start;
+div#logo{
+    float: left;
     left:15%
 }
-header > div#appName{
+div#appName{
+    text-align: center;
     left : 25%;
 }
 
-header > div#user{
+div#user{
+    float: right;
     align-content: flex-end;
-    left: 80%;
+    right: 5%;
 }
 
 footer{
     width: 100%;
     height:5%;
 }
-footer > div#copyright{
+div#copyright{
     left : 10%;
+    text-align: left;
 }
 
-footer > div#credits{
+div#credits{
     left : 70%;
+    text-align: right;
 }
 
 div#pagecontent{
