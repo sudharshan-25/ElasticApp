@@ -14,40 +14,53 @@ body{
 header{
     width: 100%;
     height: 10%;
+    display: inline;
 }
 
-div#logo{
-    float: left;
-    left:15%
+#header{
+    display: flex;
 }
-div#appName{
+span#logo{
+    float: left;
+    left:15%;
+    width:25%;
+    display: inline;
+}
+span#appName{
     text-align: center;
     left : 25%;
+    width: 50%;
 }
 
-div#user{
-    float: right;
-    align-content: flex-end;
-    right: 5%;
+span#user{
+    text-align: right;
+    width: 25%;
+    display: inline-block;
 }
 
 footer{
     width: 100%;
     height:5%;
-}
-div#copyright{
-    left : 10%;
-    text-align: left;
+    display: inline;
 }
 
-div#credits{
-    left : 70%;
+#footer{
+    display: inline;
+}
+
+span#copyright{
+    left : 10%;
+    text-align: left;
+    float: left;
+}
+
+span#credits{
     text-align: right;
+    float: right;
 }
 
 div#pagecontent{
     width:100%;
-    overflow: scroll;
     height:85%;
 }
 

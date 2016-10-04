@@ -16,30 +16,30 @@
 <body>
 
 <header>
-    <div>
-        <div id="logo">
+    <div id="header">
+        <span id="logo">
             <img src="#" alt="Logo">
-        </div>
-        <div id="appName">
-            <h4>Elastic Middleware Application</h4>
-        </div>
-        <div id="user">
+        </span>
+        <span id="appName">
+            <h2>Elastic Middleware Application</h2>
+        </span>
+        <span id="user">
             ${sessionScope.userVO.userName}
-        </div>
+        </span>
     </div>
 </header>
 <div id="pagecontent">
-
+    <jsp:include page="${param.page}" flush="true"></jsp:include>
 </div>
 
 <footer>
-    <div>
-        <div id="copyright">
+    <div id="footer">
+        <span id="copyright">
             copyright - 2016
-        </div>
-        <div id="credits">
+        </span>
+        <span id="credits">
             Thanks to Bits pilani
-        </div>
+        </span>
     </div>
 </footer>
 

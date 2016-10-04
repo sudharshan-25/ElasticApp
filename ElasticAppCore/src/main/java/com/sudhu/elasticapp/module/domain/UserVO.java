@@ -8,6 +8,8 @@ import java.util.Date;
  */
 public class UserVO {
 
+    private int userID;
+
     private String userName;
 
     private String userPin;
@@ -77,5 +79,13 @@ public class UserVO {
 
     public void setLastLoginDate(LocalDate lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }
