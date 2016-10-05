@@ -1,6 +1,6 @@
-package com.sudhu.elasticapp.dao.helper;
+package com.sudhu.elasticapp.generic.dao.helper;
 
-import com.sudhu.elasticapp.dao.domain.DBConnectionVO;
+import com.sudhu.elasticapp.generic.dao.domain.DBConnectionVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

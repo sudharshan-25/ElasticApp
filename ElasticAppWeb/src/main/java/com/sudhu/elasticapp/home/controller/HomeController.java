@@ -2,7 +2,10 @@ package com.sudhu.elasticapp.home.controller;
 
 import com.sudhu.elasticapp.common.constants.CommonConstants;
 import com.sudhu.elasticapp.home.form.CreateRequestForm;
+import com.sudhu.elasticapp.module.domain.ModuleVO;
 import com.sudhu.elasticapp.module.domain.UserVO;
+import com.sudhu.elasticapp.module.service.DomainService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class HomeController {
 
+    @Autowired
+    private DomainService domainService;
+
     @RequestMapping("/")
     public ModelAndView goHome(HttpServletRequest request, HttpServletResponse response ){
         ModelAndView view = new ModelAndView(CommonConstants.HOME_PAGE);
@@ -29,13 +35,26 @@ public class HomeController {
                                    @ModelAttribute CreateRequestForm requestForm){
         ModelAndView view = new ModelAndView(CommonConstants.NEW_REQUEST_PAGE);
         HttpSession session = request.getSession();
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked"})
         UserVO userVO = (UserVO) session.getAttribute(CommonConstants.USER_VO);
         requestForm.setUserId(userVO.getUserID());
         requestForm.setUserName(userVO.getUserName());
         //TODO
 
+        requestForm.setAvailableProjects(domainService.getApplciationList());
+        requestForm.setQueryTypes(domainService.getQueryTypes());
+
+        ModuleVO module = new ModuleVO();
+        requestForm.setModuleVO(module);
         view.addObject(CommonConstants.NEW_REQUEST_FORM, requestForm);
         return view;
+    }
+
+    @RequestMapping("/saveNewRequest")
+    public ModelAndView saveNewRequest(HttpServletRequest request, HttpServletResponse response,
+                                   @ModelAttribute CreateRequestForm requestForm){
+        ModelAndView modelAndView = new ModelAndView();
+
+        return modelAndView;
     }
 }

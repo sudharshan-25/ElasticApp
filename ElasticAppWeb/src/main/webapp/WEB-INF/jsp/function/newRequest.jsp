@@ -9,7 +9,7 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags/form" %>
 <div id="homeContainer">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/theme/requestUpdate.css">
-    <spring:form commandName="requestForm">
+    <spring:form commandName="requestForm" action="${pageContext.request.contextPath}/saveNewRequest">
         <div id="newRequestLabel">
             <fieldset id="QueryType">
                 <legend>Query Information</legend>
@@ -47,43 +47,46 @@
                 <p>
                     <span class="headerLabel">Database Vendor: </span>
                     <span class="headerValue">
-                        <spring:select path="module.databaseVendorId" items="${requestScope.requestForm.dbTypes}" itemLabel="value"
+                        <spring:select path="moduleVO.databaseVendorId" items="${requestScope.requestForm.dbTypes}" itemLabel="value"
                                        itemValue="id" cssClass="mandatory"></spring:select>
                     </span>
                 </p>
                 <p>
                     <span class="headerLabel">Server (IP/ Name): </span>
                     <span class="headerValue">
-                        <spring:input path="module.dbServerName" />
+                        <spring:input path="moduleVO.dbServerName" />
                     </span>
                 </p>
                 <p>
                     <span class="headerLabel">Port Number : </span>
                     <span class="headerValue">
-                        <spring:input path="module.dbPortNumber" />
+                        <spring:input path="moduleVO.dbPortNumber" />
                     </span>
                 </p>
                 <p>
                     <span class="headerLabel">Database Name : </span>
                     <span class="headerValue">
-                        <spring:input path="module.dataBaseName" />
+                        <spring:input path="moduleVO.dataBaseName" />
                     </span>
                 </p>
                 <p>
                     <span class="headerLabel">User Name : </span>
                     <span class="headerValue">
-                        <spring:input path="module.dbUserName" />
+                        <spring:input path="moduleVO.dbUserName" />
                     </span>
                 </p>
                 <p>
                     <span class="headerLabel">Password : </span>
                     <span class="headerValue">
-                        <spring:password path="module.dbPassword" />
+                        <spring:password path="moduleVO.dbPassword" />
                     </span>
+
                 </p>
             </fieldset>
-
-
+            <div >
+                <button type="submit">Save</button>
+                <button type="reset" >Clear</button>
+            </div>
         </div>
     </spring:form>
 </div>

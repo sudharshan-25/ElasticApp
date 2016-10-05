@@ -5,6 +5,8 @@ package com.sudhu.elasticapp.common.constants;
  */
 public class CommonConstants {
 
+    public static final String JNDI_NAME = "java:/ElasticApp";
+
     public static final String HOME_PAGE = "home";
 
     public static final String USER_VO = "userVO";

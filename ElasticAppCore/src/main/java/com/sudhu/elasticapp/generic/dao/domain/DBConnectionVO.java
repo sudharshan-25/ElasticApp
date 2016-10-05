@@ -1,4 +1,4 @@
-package com.sudhu.elasticapp.dao.domain;
+package com.sudhu.elasticapp.generic.dao.domain;
 
 import java.sql.Driver;
 

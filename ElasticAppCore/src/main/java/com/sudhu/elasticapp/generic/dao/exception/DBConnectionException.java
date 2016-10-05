@@ -1,6 +1,4 @@
-package com.sudhu.elasticapp.dao;
-
-import com.sudhu.elasticapp.dao.helper.DBConnectionHelper;
+package com.sudhu.elasticapp.generic.dao.exception;
 
 /**
  * Created by sudha on 01-Oct-16.

@@ -1,10 +1,16 @@
 package com.sudhu.elasticapp.main.init;
 
+import com.mysql.cj.fabric.xmlrpc.base.Data;
+import com.mysql.jdbc.Driver;
+import com.sudhu.elasticapp.common.constants.CommonConstants;
 import com.sudhu.elasticapp.home.controller.ApplicationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -13,6 +19,9 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,4 +81,19 @@ public class ApplicationBeanContext extends WebMvcConfigurerAdapter {
     public HandlerInterceptorAdapter getApplicationFilter(){
         return new ApplicationFilter();
     }
+
+    @Bean
+    public DataSource getDataSource() throws Exception{
+        Context context = new InitialContext();
+        return (DataSource) context.lookup(CommonConstants.JNDI_NAME);
+    }
+
+    @Bean
+    public NamedParameterJdbcOperations getJdbcOperation() throws Exception{
+        NamedParameterJdbcOperations jdbcOperations = new NamedParameterJdbcTemplate(getDataSource());
+        return jdbcOperations;
+    }
+
+
+
 }

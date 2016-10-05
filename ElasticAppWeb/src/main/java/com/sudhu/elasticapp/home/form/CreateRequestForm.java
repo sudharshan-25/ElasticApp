@@ -14,7 +14,7 @@ public class CreateRequestForm extends AbstractCommonForm {
 
     private String queryName;
 
-    private ModuleVO module;
+    private ModuleVO moduleVO;
 
     private int projectId;
 
@@ -32,6 +32,19 @@ public class CreateRequestForm extends AbstractCommonForm {
 
     private List<DomainVO> dbTypes;
 
+    private int databaseVendorId;
+
+    private String dataBaseName;
+
+    private String dbServerName;
+
+    private int dbPortNumber;
+
+    private String dbConnectionURL;
+
+    private String dbUserName = "";
+
+    private String dbPassword = "";
 
     public String getQueryName() {
         return queryName;
@@ -41,12 +54,12 @@ public class CreateRequestForm extends AbstractCommonForm {
         this.queryName = queryName;
     }
 
-    public ModuleVO getModule() {
-        return module;
+    public ModuleVO getModuleVO() {
+        return moduleVO;
     }
 
-    public void setModule(ModuleVO module) {
-        this.module = module;
+    public void setModuleVO(ModuleVO moduleVO) {
+        this.moduleVO = moduleVO;
     }
 
     public List<DomainVO> getAvailableProjects() {
@@ -122,5 +135,61 @@ public class CreateRequestForm extends AbstractCommonForm {
 
     public void setDbTypes(List<DomainVO> dbTypes) {
         this.dbTypes = dbTypes;
+    }
+
+    public int getDatabaseVendorId() {
+        return databaseVendorId;
+    }
+
+    public void setDatabaseVendorId(int databaseVendorId) {
+        this.databaseVendorId = databaseVendorId;
+    }
+
+    public String getDataBaseName() {
+        return dataBaseName;
+    }
+
+    public void setDataBaseName(String dataBaseName) {
+        this.dataBaseName = dataBaseName;
+    }
+
+    public String getDbServerName() {
+        return dbServerName;
+    }
+
+    public void setDbServerName(String dbServerName) {
+        this.dbServerName = dbServerName;
+    }
+
+    public int getDbPortNumber() {
+        return dbPortNumber;
+    }
+
+    public void setDbPortNumber(int dbPortNumber) {
+        this.dbPortNumber = dbPortNumber;
+    }
+
+    public String getDbConnectionURL() {
+        return dbConnectionURL;
+    }
+
+    public void setDbConnectionURL(String dbConnectionURL) {
+        this.dbConnectionURL = dbConnectionURL;
+    }
+
+    public String getDbUserName() {
+        return dbUserName;
+    }
+
+    public void setDbUserName(String dbUserName) {
+        this.dbUserName = dbUserName;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+
+    public void setDbPassword(String dbPassword) {
+        this.dbPassword = dbPassword;
     }
 }
