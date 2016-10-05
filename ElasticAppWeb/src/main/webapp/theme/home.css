@@ -5,13 +5,21 @@
 
 #newRequest{
     min-width: 50%;
-    float: left;
     background-color: cornsilk;
-    text-align: center;
+    float: left;
+    height : 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }
 
 #updateRequest{
     min-width: 50%;
     background-color: seashell;
     text-align: center;
+    height : 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

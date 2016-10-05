@@ -1,7 +1,6 @@
 package com.sudhu.elasticapp.dao.helper;
 
 import com.sudhu.elasticapp.dao.domain.DBConnectionVO;
-import org.apache.commons.logging.impl.LogFactoryImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
