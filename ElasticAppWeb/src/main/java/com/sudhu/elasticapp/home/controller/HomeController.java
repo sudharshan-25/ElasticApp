@@ -35,6 +35,7 @@ public class HomeController {
         requestForm.setUserName(userVO.getUserName());
         //TODO
 
+        view.addObject(CommonConstants.NEW_REQUEST_FORM, requestForm);
         return view;
     }
 }

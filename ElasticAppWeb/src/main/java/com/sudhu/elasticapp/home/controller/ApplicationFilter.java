@@ -15,12 +15,18 @@ public class ApplicationFilter extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("Filter started");
-        UserVO userVO = new UserVO();
-        userVO.setUserName("Sudharshan");
-        userVO.setUserPin("EA001");
+
         HttpSession session = request.getSession();
-        session.setAttribute(CommonConstants.USER_VO, userVO);
+
+        UserVO userVO = (UserVO) session.getAttribute(CommonConstants.USER_VO);
+
+        if(null == userVO) {
+            //TODO DB Call to fetch the user
+            userVO = new UserVO();
+            userVO.setUserName("Sudharshan");
+            userVO.setUserPin("EA001");
+            session.setAttribute(CommonConstants.USER_VO, userVO);
+        }
         return super.preHandle(request, response, handler);
     }
 }

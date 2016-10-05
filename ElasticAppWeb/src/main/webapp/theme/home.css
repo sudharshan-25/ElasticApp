@@ -1,12 +1,13 @@
 #homeContainer{
-    width:100%;
+    left: 10%;
+    width:80%;
     display: inline;
 }
 
 #newRequest{
+    float: left;
     min-width: 50%;
     background-color: cornsilk;
-    float: left;
     height : 100%;
     display: flex;
     align-items: center;
@@ -17,7 +18,6 @@
 #updateRequest{
     min-width: 50%;
     background-color: seashell;
-    text-align: center;
     height : 100%;
     display: flex;
     align-items: center;

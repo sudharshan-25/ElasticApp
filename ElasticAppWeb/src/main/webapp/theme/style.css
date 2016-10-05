@@ -60,7 +60,9 @@ span#credits{
 }
 
 div#pagecontent{
-    width:100%;
+    width:90%;
     height:85%;
+    margin-left: 5%;
+    overflow: auto;
 }
 

@@ -1,8 +1,10 @@
 package com.sudhu.elasticapp.home.form;
 
-import com.sudhu.elasticapp.common.constants.CommonConstants;
 import com.sudhu.elasticapp.common.form.AbstractCommonForm;
+import com.sudhu.elasticapp.module.domain.DomainVO;
+import com.sudhu.elasticapp.module.domain.ModuleVO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +12,17 @@ import java.util.List;
  */
 public class CreateRequestForm extends AbstractCommonForm {
 
-    private String applicationName;
+    private String queryName;
 
-    private String queryType = CommonConstants.QUERY_TYPE_SIMPLE;
+    private ModuleVO module;
+
+    private int projectId;
+
+    private List<DomainVO> availableProjects;
+
+    private String queryType ;
+
+    private List<DomainVO> queryTypes;
 
     private String query;
 
@@ -20,15 +30,36 @@ public class CreateRequestForm extends AbstractCommonForm {
 
     private String appToken;
 
-    private List<String>  queryTypes;
+    private List<DomainVO> dbTypes;
 
 
-    public String getApplicationName() {
-        return applicationName;
+    public String getQueryName() {
+        return queryName;
     }
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
+    public void setQueryName(String queryName) {
+        this.queryName = queryName;
+    }
+
+    public ModuleVO getModule() {
+        return module;
+    }
+
+    public void setModule(ModuleVO module) {
+        this.module = module;
+    }
+
+    public List<DomainVO> getAvailableProjects() {
+
+        if(null==availableProjects){
+            this.availableProjects = new ArrayList<>();
+        }
+
+        return availableProjects;
+    }
+
+    public void setAvailableProjects(List<DomainVO> availableProjects) {
+        this.availableProjects = availableProjects;
     }
 
     public String getQueryType() {
@@ -63,11 +94,33 @@ public class CreateRequestForm extends AbstractCommonForm {
         this.appToken = appToken;
     }
 
-    public List<String> getQueryTypes() {
+    public List<DomainVO> getQueryTypes() {
+        if(null==queryTypes){
+            this.queryTypes = new ArrayList<>();
+        }
         return queryTypes;
     }
 
-    public void setQueryTypes(List<String> queryTypes) {
+    public void setQueryTypes(List<DomainVO> queryTypes) {
         this.queryTypes = queryTypes;
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    public List<DomainVO> getDbTypes() {
+        if(null==this.dbTypes){
+            this.dbTypes = new ArrayList<>();
+        }
+        return dbTypes;
+    }
+
+    public void setDbTypes(List<DomainVO> dbTypes) {
+        this.dbTypes = dbTypes;
     }
 }

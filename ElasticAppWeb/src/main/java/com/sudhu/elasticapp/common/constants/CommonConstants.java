@@ -14,4 +14,6 @@ public class CommonConstants {
     public static final String QUERY_TYPE_COMPLEX = "complex";
 
     public static final String NEW_REQUEST_PAGE ="newRequest";
+
+    public static final String NEW_REQUEST_FORM = "requestForm";
 }
