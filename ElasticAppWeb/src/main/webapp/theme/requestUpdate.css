@@ -1,0 +1,14 @@
+.headerLabel{
+    display: inline-block;
+    width:20%;
+    margin-left: 15%;
+}
+.headerValue{
+    display: inline-block;
+    margin-left: 10%;
+
+}
+
+#homeContainer {
+    background-color: cornsilk;
+}

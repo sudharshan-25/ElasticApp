@@ -5,11 +5,13 @@ package com.sudhu.elasticapp.module.domain;
  */
 public class ModuleVO {
 
-    private String moduleName;
+    private int databaseVendorId;
 
     private String dataBaseName;
 
     private String dbServerName;
+
+    private int dbPortNumber;
 
     private String dbConnectionURL;
 
@@ -17,14 +19,6 @@ public class ModuleVO {
 
     private String dbPassword;
 
-
-    public String getModuleName() {
-        return moduleName;
-    }
-
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
-    }
 
     public String getDataBaseName() {
         return dataBaseName;
@@ -64,5 +58,21 @@ public class ModuleVO {
 
     public void setDbPassword(String dbPassword) {
         this.dbPassword = dbPassword;
+    }
+
+    public int getDatabaseVendorId() {
+        return databaseVendorId;
+    }
+
+    public void setDatabaseVendorId(int databaseVendorId) {
+        this.databaseVendorId = databaseVendorId;
+    }
+
+    public int getDbPortNumber() {
+        return dbPortNumber;
+    }
+
+    public void setDbPortNumber(int dbPortNumber) {
+        this.dbPortNumber = dbPortNumber;
     }
 }
