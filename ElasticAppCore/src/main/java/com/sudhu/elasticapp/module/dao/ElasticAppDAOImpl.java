@@ -45,6 +45,29 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
     }
 
     @Override
+    public List<DomainVO> getStatusList(){
+        String sqlString = " SELECT status_id, status_key, status_desc from t_mstatus where status_id != :statusid ";
+        MapSqlParameterSource map = new MapSqlParameterSource();
+        map.addValue("statusid", 4);
+        List<DomainVO> statusList = jdbcOperations.query(sqlString,map, new DomainVORowMapper());
+        return statusList;
+    }
+
+    @Override
+    public List<DomainVO> getFrequencyList(){
+        String sqlString = " SELECT freq_id, freq_key, freq_desc from t_mfrequency ";
+        List<DomainVO> frequencyList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+        return frequencyList;
+    }
+
+    @Override
+    public List<DomainVO> getDBTypeList(){
+        String sqlString = " SELECT db_id, db_driver, db_desc from t_mdbconfig ";
+        List<DomainVO> dbTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+        return dbTypeList;
+    }
+
+    @Override
     public UserVO getUser(String userPin){
         String sqlString = " SELECT user_id, user_name, user_pin, user_email, dateOfBirth, dateOfJoining, lastLogin FROM t_musers where user_pin = :userpin ";
         MapSqlParameterSource map = new MapSqlParameterSource();

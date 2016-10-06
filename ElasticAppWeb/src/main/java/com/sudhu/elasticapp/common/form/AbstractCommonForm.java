@@ -12,7 +12,7 @@ abstract public class AbstractCommonForm {
 
     private String userName;
 
-    private String errorMessage;
+    private boolean errorForm;
 
     private List<String> errorMessages;
 
@@ -32,13 +32,7 @@ abstract public class AbstractCommonForm {
         this.userName = userName;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
 
     public List<String> getErrorMessages() {
         if(this.errorMessages == null){
@@ -49,5 +43,18 @@ abstract public class AbstractCommonForm {
 
     public void setErrorMessages(List<String> errorMessages) {
         this.errorMessages = errorMessages;
+    }
+
+    public boolean isErrorForm() {
+        if(null == this.errorMessages || this.errorMessages.isEmpty()){
+           this.errorForm = false;
+        }else{
+            this.errorForm = true;
+        }
+        return errorForm;
+    }
+
+    public void setErrorForm(boolean errorForm) {
+        this.errorForm = errorForm;
     }
 }

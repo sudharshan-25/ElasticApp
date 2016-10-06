@@ -43,6 +43,8 @@ public class HomeController {
 
         requestForm.setAvailableProjects(domainService.getApplciationList());
         requestForm.setQueryTypes(domainService.getQueryTypes());
+        requestForm.setDbTypes(domainService.getDBTypeList());
+        requestForm.setUpdateFreqList(domainService.getFrequencyList());
 
         ModuleVO module = new ModuleVO();
         requestForm.setModuleVO(module);

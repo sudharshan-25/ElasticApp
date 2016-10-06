@@ -7,9 +7,11 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags/form" %>
+<script src="${pageContext.request.contextPath}/scripts/newRequest.js"></script>
 <div id="homeContainer">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/theme/requestUpdate.css">
     <spring:form commandName="requestForm" action="${pageContext.request.contextPath}/saveNewRequest">
+        <spring:hidden path="errorForm" />
         <div id="newRequestLabel">
             <fieldset id="QueryType">
                 <legend>Query Information</legend>
@@ -34,6 +36,13 @@
                     </span>
                 </p>
                 <p>
+                    <span class="headerLabel">Frequency : </span>
+                    <span class="headerValue">
+                        <spring:select path="updateFreq" items="${requestScope.requestForm.updateFreqList}" itemLabel="value"
+                                       itemValue="id" cssClass="mandatory"></spring:select>
+                    </span>
+                </p>
+                <p>
                     <span class="headerLabel">Query : </span>
                     <span class="headerValue">
                         <spring:textarea path="query" />
@@ -47,7 +56,7 @@
                 <p>
                     <span class="headerLabel">Database Vendor: </span>
                     <span class="headerValue">
-                        <spring:select path="moduleVO.databaseVendorId" items="${requestScope.requestForm.dbTypes}" itemLabel="value"
+                        <spring:select path="moduleVO.databaseVendorId" items="${requestScope.requestForm.dbTypes}" itemLabel="key"
                                        itemValue="id" cssClass="mandatory"></spring:select>
                     </span>
                 </p>

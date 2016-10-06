@@ -42,6 +42,6 @@
         </span>
     </div>
 </footer>
-
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jQuery.js" ></script>
 </body>
 </html>

@@ -16,7 +16,6 @@ public class DomainService {
     @Autowired
     private ElasticAppDAO elasticAppDAO;
 
-
     public List<DomainVO> getApplciationList(){
         return elasticAppDAO.getApplciationList();
     }
@@ -25,8 +24,14 @@ public class DomainService {
         return elasticAppDAO.getQueryTypes();
     }
 
-    public UserVO getUser(String userPin){
-        return elasticAppDAO.getUser(userPin);
+    public List<DomainVO> getStatusList(){
+        return elasticAppDAO.getStatusList();
     }
 
+    public List<DomainVO> getFrequencyList(){
+        return elasticAppDAO.getFrequencyList();
+    }
+    public List<DomainVO> getDBTypeList(){
+        return elasticAppDAO.getDBTypeList();
+    }
 }

@@ -32,19 +32,9 @@ public class CreateRequestForm extends AbstractCommonForm {
 
     private List<DomainVO> dbTypes;
 
-    private int databaseVendorId;
+    private int updateFreq;
 
-    private String dataBaseName;
-
-    private String dbServerName;
-
-    private int dbPortNumber;
-
-    private String dbConnectionURL;
-
-    private String dbUserName = "";
-
-    private String dbPassword = "";
+    private List<DomainVO> updateFreqList;
 
     public String getQueryName() {
         return queryName;
@@ -137,59 +127,21 @@ public class CreateRequestForm extends AbstractCommonForm {
         this.dbTypes = dbTypes;
     }
 
-    public int getDatabaseVendorId() {
-        return databaseVendorId;
+
+    public List<DomainVO> getUpdateFreqList() {
+        return updateFreqList;
     }
 
-    public void setDatabaseVendorId(int databaseVendorId) {
-        this.databaseVendorId = databaseVendorId;
+    public void setUpdateFreqList(List<DomainVO> updateFreqList) {
+        this.updateFreqList = updateFreqList;
     }
 
-    public String getDataBaseName() {
-        return dataBaseName;
+
+    public int getUpdateFreq() {
+        return updateFreq;
     }
 
-    public void setDataBaseName(String dataBaseName) {
-        this.dataBaseName = dataBaseName;
-    }
-
-    public String getDbServerName() {
-        return dbServerName;
-    }
-
-    public void setDbServerName(String dbServerName) {
-        this.dbServerName = dbServerName;
-    }
-
-    public int getDbPortNumber() {
-        return dbPortNumber;
-    }
-
-    public void setDbPortNumber(int dbPortNumber) {
-        this.dbPortNumber = dbPortNumber;
-    }
-
-    public String getDbConnectionURL() {
-        return dbConnectionURL;
-    }
-
-    public void setDbConnectionURL(String dbConnectionURL) {
-        this.dbConnectionURL = dbConnectionURL;
-    }
-
-    public String getDbUserName() {
-        return dbUserName;
-    }
-
-    public void setDbUserName(String dbUserName) {
-        this.dbUserName = dbUserName;
-    }
-
-    public String getDbPassword() {
-        return dbPassword;
-    }
-
-    public void setDbPassword(String dbPassword) {
-        this.dbPassword = dbPassword;
+    public void setUpdateFreq(int updateFreq) {
+        this.updateFreq = updateFreq;
     }
 }

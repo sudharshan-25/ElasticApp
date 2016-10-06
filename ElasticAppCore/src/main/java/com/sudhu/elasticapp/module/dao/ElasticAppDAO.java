@@ -13,5 +13,11 @@ public interface ElasticAppDAO {
 
     List<DomainVO> getQueryTypes();
 
+    List<DomainVO> getStatusList();
+
+    List<DomainVO> getFrequencyList();
+
+    List<DomainVO> getDBTypeList();
+
     UserVO getUser(String userPin);
 }
