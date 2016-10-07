@@ -4,13 +4,14 @@ import com.sudhu.elasticapp.module.dao.ElasticAppDAO;
 import com.sudhu.elasticapp.module.domain.DomainVO;
 import com.sudhu.elasticapp.module.domain.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by sudha on 05-Oct-16.
  */
-@org.springframework.stereotype.Service
+@Service
 public class DomainService {
 
     @Autowired
