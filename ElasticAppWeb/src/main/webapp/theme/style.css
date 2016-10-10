@@ -66,3 +66,38 @@ div#pagecontent{
     overflow: auto;
 }
 
+.button {
+    background-color: #4CAF50;
+    /*border: none;*/
+    color: white;
+    padding: 5px 10px 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+select {
+	width : 250px !important;
+}
+input{
+	width : 250px !important;
+}
+
+#messageDiv{
+	width: 100%;
+	display: inline-block;
+	height : 10%;
+}
+
+.error{
+	background-color: orange;
+	color: red;
+}
+
+.success{
+	background-color: lime;
+	color: green;
+}

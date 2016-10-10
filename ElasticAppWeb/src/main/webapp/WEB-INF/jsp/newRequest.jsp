@@ -10,4 +10,3 @@
     <jsp:param name="page" value="function/newRequest.jsp" />
     <jsp:param name="title" value="Create New Request" />
 </jsp:include>
-

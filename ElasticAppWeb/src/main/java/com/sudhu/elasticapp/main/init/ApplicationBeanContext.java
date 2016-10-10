@@ -1,29 +1,37 @@
 package com.sudhu.elasticapp.main.init;
 
-import com.mysql.cj.fabric.xmlrpc.base.Data;
-import com.mysql.jdbc.Driver;
-import com.sudhu.elasticapp.common.constants.CommonConstants;
-import com.sudhu.elasticapp.home.controller.ApplicationFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.accept.ContentNegotiationManager;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.guava.GuavaCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import com.google.common.cache.CacheBuilder;
+import com.sudhu.elasticapp.common.constants.CommonConstants;
+import com.sudhu.elasticapp.home.controller.ApplicationFilter;
 
 /**
  * Created by sudha on 02-Oct-16.
@@ -32,17 +40,10 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.sudhu")
+@EnableCaching
 public class ApplicationBeanContext extends WebMvcConfigurerAdapter {
 
-    /*
-   * Configure ContentNegotiationManager
-   */
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.ignoreAcceptHeader(true).defaultContentType(
-                MediaType.TEXT_HTML);
-    }
-
+   
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/scripts/**").addResourceLocations("/scripts/");
@@ -52,7 +53,7 @@ public class ApplicationBeanContext extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public ViewResolver getViewResolver(ContentNegotiationManager  manager){
+    public ContentNegotiatingViewResolver getViewResolver(ContentNegotiationManager  manager){
 
         List<ViewResolver> viewResolvers = new ArrayList<ViewResolver>();
 
@@ -62,12 +63,15 @@ public class ApplicationBeanContext extends WebMvcConfigurerAdapter {
         r1.setViewClass(JstlView.class);
         viewResolvers.add(r1);
 
-        JsonViewResolver jsonViewResolver = new JsonViewResolver();
-        viewResolvers.add(jsonViewResolver);
-
+        
         ContentNegotiatingViewResolver viewResolver = new ContentNegotiatingViewResolver();
+        
         viewResolver.setContentNegotiationManager(manager);
         viewResolver.setViewResolvers(viewResolvers);
+        List<View> views = new ArrayList<>();
+        views.add(new MappingJackson2JsonView());
+        viewResolver.setDefaultViews(views);
+        
         return viewResolver;
     }
 
@@ -94,6 +98,14 @@ public class ApplicationBeanContext extends WebMvcConfigurerAdapter {
         return jdbcOperations;
     }
 
-
+    @Bean(name="ApplicationCache")
+    public CacheManager getCacheManager(){
+    	GuavaCacheManager cacheManager = new GuavaCacheManager(CommonConstants.APPLICATION_CACHE);
+    	CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder()
+    		       .maximumSize(100)
+    		       .expireAfterWrite(10, TimeUnit.DAYS);
+    	cacheManager.setCacheBuilder(cacheBuilder);
+    	return cacheManager;
+    }
 
 }

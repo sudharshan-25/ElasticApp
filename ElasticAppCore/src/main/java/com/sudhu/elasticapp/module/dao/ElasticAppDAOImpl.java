@@ -1,7 +1,11 @@
 package com.sudhu.elasticapp.module.dao;
 
-import com.sudhu.elasticapp.module.domain.DomainVO;
-import com.sudhu.elasticapp.module.domain.UserVO;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -10,10 +14,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
+import com.sudhu.elasticapp.module.domain.DomainVO;
+import com.sudhu.elasticapp.module.domain.RequestHeaderVO;
+import com.sudhu.elasticapp.module.domain.RequestVO;
+import com.sudhu.elasticapp.module.domain.UserVO;
 
 /**
  * Created by sudha on 05-Oct-16.
@@ -21,87 +25,207 @@ import java.util.List;
 @Repository
 public class ElasticAppDAOImpl implements ElasticAppDAO {
 
-    @Autowired
-    private NamedParameterJdbcOperations jdbcOperations;
+	@Autowired
+	private NamedParameterJdbcOperations jdbcOperations;
 
+	@Override
+	public List<DomainVO> getApplciationList() {
 
-    @Override
-    public List<DomainVO> getApplciationList(){
+		String sqlString = " SELECT app_id, app_key, app_name from t_mapplication";
 
-        String sqlString = " SELECT app_id, app_key, app_name from t_mapplication";
+		List<DomainVO> applicationList = jdbcOperations.query(sqlString, new DomainVORowMapper());
 
-        List<DomainVO> applicationList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+		return applicationList;
+	}
 
-        return applicationList;
-    }
+	@Override
+	public List<DomainVO> getQueryTypes() {
+		String sqlString = " SELECT query_type_id, query_type_key, query_type_desc from t_mquery_types";
 
-    @Override
-    public List<DomainVO> getQueryTypes(){
-        String sqlString = " SELECT query_type_id, query_type_key, query_type_desc from t_mquery_types";
+		List<DomainVO> queryTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
 
-        List<DomainVO> queryTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+		return queryTypeList;
+	}
 
-        return queryTypeList;
-    }
+	@Override
+	public List<DomainVO> getStatusList() {
+		String sqlString = " SELECT status_id, status_key, status_desc from t_mstatus where status_id != :statusid ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("statusid", 4);
+		List<DomainVO> statusList = jdbcOperations.query(sqlString, map, new DomainVORowMapper());
+		return statusList;
+	}
 
-    @Override
-    public List<DomainVO> getStatusList(){
-        String sqlString = " SELECT status_id, status_key, status_desc from t_mstatus where status_id != :statusid ";
-        MapSqlParameterSource map = new MapSqlParameterSource();
-        map.addValue("statusid", 4);
-        List<DomainVO> statusList = jdbcOperations.query(sqlString,map, new DomainVORowMapper());
-        return statusList;
-    }
+	@Override
+	public List<DomainVO> getFrequencyList() {
+		String sqlString = " SELECT freq_id, freq_key, freq_desc from t_mfrequency ";
+		List<DomainVO> frequencyList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+		return frequencyList;
+	}
 
-    @Override
-    public List<DomainVO> getFrequencyList(){
-        String sqlString = " SELECT freq_id, freq_key, freq_desc from t_mfrequency ";
-        List<DomainVO> frequencyList = jdbcOperations.query(sqlString, new DomainVORowMapper());
-        return frequencyList;
-    }
+	@Override
+	public List<DomainVO> getDBTypeList() {
+		String sqlString = " SELECT db_id, db_driver, db_desc from t_mdbconfig ";
+		List<DomainVO> dbTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+		return dbTypeList;
+	}
 
-    @Override
-    public List<DomainVO> getDBTypeList(){
-        String sqlString = " SELECT db_id, db_driver, db_desc from t_mdbconfig ";
-        List<DomainVO> dbTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
-        return dbTypeList;
-    }
+	@Override
+	public UserVO getUser(String userPin) {
+		String sqlString = " SELECT user_id, user_name, user_pin, user_email, dateOfBirth, dateOfJoining, lastLogin FROM t_musers where user_pin = :userpin ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("userpin", userPin);
 
-    @Override
-    public UserVO getUser(String userPin){
-        String sqlString = " SELECT user_id, user_name, user_pin, user_email, dateOfBirth, dateOfJoining, lastLogin FROM t_musers where user_pin = :userpin ";
-        MapSqlParameterSource map = new MapSqlParameterSource();
-        map.addValue("userpin", userPin);
+		UserVO userVO = jdbcOperations.query(sqlString, map, new ResultSetExtractor<UserVO>() {
+			@Override
+			public UserVO extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+				UserVO userVO = null;
+				if (resultSet.next()) {
+					userVO = new UserVO();
+					userVO.setUserID(resultSet.getInt(1));
+					userVO.setUserName(resultSet.getString(2));
+					userVO.setUserPin(resultSet.getString(3));
+					userVO.setUserEmail(resultSet.getString(4));
+					userVO.setDateofBirth(resultSet.getDate(5).toLocalDate());
+					userVO.setDateOfJoining(resultSet.getDate(6).toLocalDate());
+				}
+				return userVO;
+			}
+		});
 
-        UserVO userVO = jdbcOperations.query(sqlString, map, new ResultSetExtractor<UserVO>() {
-            @Override
-            public UserVO extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-                UserVO userVO = null;
-                if(resultSet.next()){
-                    userVO = new UserVO();
-                    userVO.setUserID(resultSet.getInt(1));
-                    userVO.setUserName(resultSet.getString(2));
-                    userVO.setUserPin(resultSet.getString(3));
-                    userVO.setUserEmail(resultSet.getString(4));
-                    userVO.setDateofBirth(resultSet.getDate(5).toLocalDate());
-                    userVO.setDateOfJoining(resultSet.getDate(6).toLocalDate());
-                }
-                return userVO;
-            }
-        });
+		return userVO;
+	}
 
-        return userVO;
-    }
+	@Override
+	public boolean checkUniqueQueryName(String queryName) {
 
+		String sqlString = " SELECT query_name from t_mquery where query_name = :queryName ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("queryName", queryName);
+		boolean uniqueName = jdbcOperations.query(sqlString, map, new ResultSetExtractor<Boolean>() {
 
-    private static class DomainVORowMapper implements RowMapper<DomainVO> {
-        @Override
-        public DomainVO mapRow(ResultSet resultSet, int i) throws SQLException {
-            DomainVO domainVO = new DomainVO();
-            domainVO.setId(resultSet.getInt(1));
-            domainVO.setKey(resultSet.getString(2));
-            domainVO.setValue(resultSet.getString(3));
-            return domainVO;
-        }
-    }
+			@Override
+			public Boolean extractData(ResultSet rs) throws SQLException, DataAccessException {
+				return !rs.next();
+			}
+		});
+
+		return uniqueName;
+	}
+
+	public void saveQueryRequest(RequestVO requestVO) {
+
+		String sqlString = "";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		if (requestVO.getRequestId() == 0) {
+			sqlString = "SELECT max(query_id) from t_mquery";
+
+			int requestId = jdbcOperations.query(sqlString, new ResultSetExtractor<Integer>() {
+
+				@Override
+				public Integer extractData(ResultSet rs) throws SQLException, DataAccessException {
+					return rs.next() ? rs.getInt(1) : 0;
+				}
+			});
+			requestVO.setRequestId(requestId + 1);
+			sqlString = " INSERT INTO t_mquery "
+					+ "(query_id, query_name, query_app_id, query_type_id, query_string, query_freq_id, query_status_id, query_app_token, "
+					+ " db_server, db_port, db_name, db_username, db_password, db_connection_url, db_id, added_by, added_on  )"
+					+ " values (:query_id, :query_name, :query_app_id, :query_type_id, :query_string, :query_freq_id, "
+					+ " :query_status_id, :query_app_token, :db_server, :db_port, :db_name, :db_username, :db_password, "
+					+ " :db_connection_url, :db_id, :added_by, :added_on  )";
+			map.addValue("added_on", Calendar.getInstance().getTime());
+			map.addValue("added_by", "1");
+			String appToken = requestVO.getQueryName() + ":" + requestId;
+			map.addValue("query_app_token", appToken);
+		} else {
+			sqlString = " UPDATE t_mquery set " + " query_name = :query_name , query_app_id = :query_app_id,"
+					+ " query_type_id = :query_type_id, query_string = :query_string, query_freq_id = :query_freq_id,"
+					+ " query_status_id = query_status_id, db_server = :db_server, db_port = :db_port, db_name = :db_name,"
+					+ " db_username = :db_username, db_password= :db_password, db_connection_url : db_connection_url,"
+					+ " db_id = :db_id, modified_by : modified_by, modified_on = :modified_on where query_id = :query_id ";
+			map.addValue("modified_on", Calendar.getInstance().getTime());
+			map.addValue("modified_by", "1");
+		}
+
+		map.addValue("query_id", requestVO.getRequestId());
+		map.addValue("query_name", requestVO.getQueryName());
+		map.addValue("query_app_id", requestVO.getProjectId());
+		map.addValue("query_type_id", requestVO.getQueryType());
+		map.addValue("query_string", requestVO.getQuery());
+		map.addValue("query_freq_id", requestVO.getUpdateFreq());
+		map.addValue("query_status_id", 1);
+		map.addValue("db_server", requestVO.getModuleVO().getDbServerName());
+		map.addValue("db_port", requestVO.getModuleVO().getDbPortNumber());
+		map.addValue("db_name", requestVO.getModuleVO().getDataBaseName());
+		map.addValue("db_username", requestVO.getModuleVO().getDbUserName());
+		map.addValue("db_id", requestVO.getModuleVO().getDatabaseVendorId());
+		map.addValue("db_password", requestVO.getModuleVO().getDbPassword().getBytes());
+		map.addValue("db_connection_url", requestVO.getModuleVO().getDbConnectionURL());
+
+		jdbcOperations.update(sqlString, map);
+
+	}
+
+	@Override
+	public List<RequestHeaderVO> searchResults(Map<String, String> searchCriteria) {
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(
+				"select t_mquery.query_id, t_mquery.query_name,  t_mquery.query_app_token, t_mquery.db_connection_url, ");
+		builder.append(
+				"t_mapplication.app_name, t_mquery_types.query_type_desc, t_mfrequency.freq_desc, t_mstatus.status_desc ");
+		builder.append("from t_mquery ");
+		builder.append("inner join t_mquery_types on t_mquery_types.query_type_id = t_mquery.query_type_id ");
+		builder.append("inner join t_mapplication on t_mapplication.app_id = t_mquery.query_app_id ");
+		builder.append("inner join t_mdbconfig on t_mdbconfig.db_id = t_mquery.db_id ");
+		builder.append("inner join t_mfrequency on t_mfrequency.freq_id = t_mquery.query_freq_id ");
+		builder.append("inner join t_mstatus on t_mstatus.status_id = t_mquery.query_status_id ");
+		builder.append(" where ");
+		MapSqlParameterSource map = new MapSqlParameterSource();
+
+		for (String key : searchCriteria.keySet()) {
+			String value = searchCriteria.get(key);
+			if (value.matches("\\d+")) {
+				builder.append("t_mquery.").append(key).append(" = :").append(key);
+			} else {
+				builder.append("t_mquery.").append(key).append(" like :").append(key);
+			}
+			builder.append(" and ");
+			map.addValue(key, value);
+		}
+
+		String sqlString = builder.substring(0, builder.lastIndexOf(" and "));
+
+		List<RequestHeaderVO> searchResults = jdbcOperations.query(sqlString, map, new RowMapper<RequestHeaderVO>() {
+
+			@Override
+			public RequestHeaderVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				RequestHeaderVO searchRequest = new RequestHeaderVO();
+				searchRequest.setQueryId(rs.getInt(1));
+				searchRequest.setQueryName(rs.getString(2));
+				searchRequest.setAppToken(rs.getString(3));
+				searchRequest.setConnectionURL(rs.getString(4));
+				searchRequest.setQueryApplication(rs.getString(5));
+				searchRequest.setQueryType(rs.getString(6));
+				searchRequest.setQueryFrequency(rs.getString(7));
+				searchRequest.setQueryStatus(rs.getString(8));
+				return searchRequest;
+			}
+
+		});
+
+		return searchResults;
+	}
+
+	private static class DomainVORowMapper implements RowMapper<DomainVO> {
+		@Override
+		public DomainVO mapRow(ResultSet resultSet, int i) throws SQLException {
+			DomainVO domainVO = new DomainVO();
+			domainVO.setId(resultSet.getInt(1));
+			domainVO.setKey(resultSet.getString(2));
+			domainVO.setValue(resultSet.getString(3));
+			return domainVO;
+		}
+	}
 }

@@ -1,7 +1,6 @@
 package com.sudhu.elasticapp.module.domain;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Created by sudha on 02-Oct-16.

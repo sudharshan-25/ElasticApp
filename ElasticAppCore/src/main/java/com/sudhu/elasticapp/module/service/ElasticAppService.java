@@ -1,7 +1,13 @@
 package com.sudhu.elasticapp.module.service;
 
 import com.sudhu.elasticapp.module.dao.ElasticAppDAO;
+import com.sudhu.elasticapp.module.domain.RequestHeaderVO;
+import com.sudhu.elasticapp.module.domain.RequestVO;
 import com.sudhu.elasticapp.module.domain.UserVO;
+
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +22,18 @@ public class ElasticAppService {
 
     public UserVO getUser(String userPin){
         return elasticAppDAO.getUser(userPin);
+    }
+    
+    
+    public boolean checkUniqueQueryName(String queryName){
+    	return elasticAppDAO.checkUniqueQueryName(queryName);
+    }
+    
+    public void saveQueryRequest(RequestVO requestVO) {
+    	elasticAppDAO.saveQueryRequest(requestVO);
+    }
+    
+    public List<RequestHeaderVO> searchResults(Map<String, String> searchCriteria){
+    	return elasticAppDAO.searchResults(searchCriteria);
     }
 }

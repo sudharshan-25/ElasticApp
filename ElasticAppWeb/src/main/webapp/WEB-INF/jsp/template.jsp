@@ -6,15 +6,16 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-16">
     <meta http-equiv="Cache-Control" >
     <link rel="stylesheet" href="${pageContext.request.contextPath}/theme/style.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jQuery.js" ></script>
     <title>${param.title}</title>
 </head>
 <body>
-
 <header>
     <div id="header">
         <span id="logo">
@@ -28,6 +29,11 @@
         </span>
     </div>
 </header>
+<section id="messageDiv">
+	<article id="message">
+	</article>
+</section>
+
 <div id="pagecontent">
     <jsp:include page="${param.page}" flush="true"></jsp:include>
 </div>
@@ -42,6 +48,6 @@
         </span>
     </div>
 </footer>
-<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jQuery.js" ></script>
+
 </body>
 </html>

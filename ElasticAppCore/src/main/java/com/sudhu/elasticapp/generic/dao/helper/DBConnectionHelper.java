@@ -1,13 +1,16 @@
 package com.sudhu.elasticapp.generic.dao.helper;
 
-import com.sudhu.elasticapp.generic.dao.domain.DBConnectionVO;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.sudhu.elasticapp.generic.dao.domain.DBConnectionVO;
+import com.sudhu.elasticapp.generic.dao.exception.DBConnectionException;
+import com.sudhu.elasticapp.module.domain.ModuleVO;
 
 /**
  * Created by sudha on 01-Oct-16.
@@ -16,7 +19,7 @@ public class DBConnectionHelper {
 
     private static DBConnectionHelper instance;
 
-    private final Logger LOGGER = LogManager.getLogger(DBConnectionHelper.class);
+    public final Logger LOGGER = LogManager.getLogger(DBConnectionHelper.class);
 
     private DBConnectionHelper(){
 
@@ -35,8 +38,8 @@ public class DBConnectionHelper {
         return instance;
     }
 
-    public boolean checkConnection(DBConnectionVO connectionVO){
-        boolean isConnectionAvailable  = false;
+    public void checkConnection(DBConnectionVO connectionVO) throws DBConnectionException{
+        
         Connection connection = null;
         try {
             Driver driver = connectionVO.getDbType().newInstance();
@@ -50,9 +53,9 @@ public class DBConnectionHelper {
             }else{
                 connection = DriverManager.getConnection(connectionString,userName,passWord);
             }
-            isConnectionAvailable = true;
+            
         }catch (Exception ex){
-            isConnectionAvailable = false;
+            throw new DBConnectionException(ex);
         }finally {
             if (null != connection){
                 try {
@@ -62,9 +65,37 @@ public class DBConnectionHelper {
                 }
             }
         }
-
-
-        return isConnectionAvailable;
     }
 
+    public DBConnectionVO getConnectionVO(ModuleVO moduleVO){
+        DBConnectionVO connectionVO = new DBConnectionVO();
+
+        if(null != moduleVO){
+            int vendorID = moduleVO.getDatabaseVendorId();
+            String connectionURL = "";
+            if(vendorID==1){
+                connectionURL = "jdbc:mysql://";
+                connectionVO.setDbType(com.mysql.cj.jdbc.Driver.class);
+            }else if (vendorID == 2){
+                connectionURL = "jdbc:microsoft:sqlserver://";
+                connectionVO.setDbType(null);
+            }
+
+            connectionURL += moduleVO.getDbServerName() + ":" + moduleVO.getDbPortNumber();
+
+            if(vendorID==1){
+                connectionURL += "/" + moduleVO.getDataBaseName();
+                connectionURL += "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+                
+            }else if (vendorID == 2){
+                connectionURL += ";DataBaseName=" + moduleVO.getDataBaseName();
+            }
+            connectionVO.setConnectionString(connectionURL);
+            connectionVO.setUserName(moduleVO.getDbUserName());
+            connectionVO.setPassword(moduleVO.getDbPassword());
+
+        }
+
+        return connectionVO;
+    }
 }

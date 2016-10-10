@@ -7,13 +7,7 @@ import java.sql.Driver;
  */
 public class DBConnectionVO {
 
-    private static DBConnectionVO ourInstance = new DBConnectionVO();
-
-    public static DBConnectionVO getInstance() {
-        return ourInstance;
-    }
-
-    private DBConnectionVO() {
+    public DBConnectionVO() {
     }
 
     private String connectionString;
@@ -22,7 +16,7 @@ public class DBConnectionVO {
 
     private String password;
 
-    private Class<Driver> dbType;
+    private Class<? extends Driver> dbType;
 
 
     public String getConnectionString() {
@@ -49,11 +43,11 @@ public class DBConnectionVO {
         this.password = password;
     }
 
-    public Class<Driver> getDbType() {
+    public Class<? extends Driver> getDbType() {
         return dbType;
     }
 
-    public void setDbType(Class<Driver> dbType) {
+    public void setDbType(Class<? extends Driver> dbType) {
         this.dbType = dbType;
     }
 }

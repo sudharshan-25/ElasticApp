@@ -16,7 +16,7 @@
     </div>
     <div id="updateRequest">
         <span>
-            <a href="${pageContext.request.contextPath}/searchRequest">Update Existing Request</a>
+            <a href="${pageContext.request.contextPath}/searchRequests">Update Existing Request</a>
         </span>
     </div>
 
