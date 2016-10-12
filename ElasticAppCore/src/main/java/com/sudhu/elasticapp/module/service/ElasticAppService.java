@@ -36,4 +36,8 @@ public class ElasticAppService {
     public List<RequestHeaderVO> searchResults(Map<String, String> searchCriteria){
     	return elasticAppDAO.searchResults(searchCriteria);
     }
+    
+    public RequestVO getRequest(int requestId) {
+    	return elasticAppDAO.getRequest(requestId);
+    }
 }

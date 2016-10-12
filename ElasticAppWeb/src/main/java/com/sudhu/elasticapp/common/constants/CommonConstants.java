@@ -19,9 +19,13 @@ public class CommonConstants {
     
     public static final String SEARCH_REQUEST_PAGE ="searchRequest";
     
+    public static final String UPDATE_REQUEST_PAGE = "updateRequest";
+    
     public static final String SUMMARY_PAGE = "summary";
 
     public static final String NEW_REQUEST_FORM = "requestForm";
 
 	public static final String APPLICATION_CACHE = "ApplicationCache";
+
+	
 }

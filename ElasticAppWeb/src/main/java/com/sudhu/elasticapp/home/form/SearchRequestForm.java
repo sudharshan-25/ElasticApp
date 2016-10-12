@@ -18,6 +18,8 @@ public class SearchRequestForm extends AbstractCommonForm {
 
 	private int updateFreq;
 
+	private int statusId;
+	
 	private List<DomainVO> queryTypes;
 
 	private List<DomainVO> availableProjects;
@@ -25,6 +27,36 @@ public class SearchRequestForm extends AbstractCommonForm {
 	private List<DomainVO> dbTypes;
 
 	private List<DomainVO> updateFreqList;
+	
+	private List<DomainVO> statusList;
+
+	/**
+	 * @return the statusId
+	 */
+	public int getStatusId() {
+		return statusId;
+	}
+
+	/**
+	 * @param statusId the statusId to set
+	 */
+	public void setStatusId(int statusId) {
+		this.statusId = statusId;
+	}
+
+	/**
+	 * @return the statusList
+	 */
+	public List<DomainVO> getStatusList() {
+		return statusList;
+	}
+
+	/**
+	 * @param statusList the statusList to set
+	 */
+	public void setStatusList(List<DomainVO> statusList) {
+		this.statusList = statusList;
+	}
 
 	private List<RequestHeaderVO> searchResults;
 

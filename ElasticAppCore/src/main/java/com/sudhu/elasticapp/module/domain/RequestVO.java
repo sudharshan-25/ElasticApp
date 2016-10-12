@@ -18,6 +18,8 @@ public class RequestVO {
 	
 	private int updateFreq;
 
+	private int statusId;
+	
 	/**
 	 * @return the requestId
 	 */
@@ -128,6 +130,20 @@ public class RequestVO {
 	 */
 	public void setUpdateFreq(int updateFreq) {
 		this.updateFreq = updateFreq;
+	}
+
+	/**
+	 * @return the statusId
+	 */
+	public int getStatusId() {
+		return statusId;
+	}
+
+	/**
+	 * @param statusId the statusId to set
+	 */
+	public void setStatusId(int statusId) {
+		this.statusId = statusId;
 	}
 	
 	

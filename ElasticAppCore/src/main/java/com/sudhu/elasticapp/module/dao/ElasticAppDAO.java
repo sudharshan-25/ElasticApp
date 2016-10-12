@@ -29,4 +29,6 @@ public interface ElasticAppDAO {
 	void saveQueryRequest(RequestVO requestVO) ;
 
 	List<RequestHeaderVO> searchResults(Map<String, String> searchCriteria);
+
+	RequestVO getRequest(int requestId);
 }

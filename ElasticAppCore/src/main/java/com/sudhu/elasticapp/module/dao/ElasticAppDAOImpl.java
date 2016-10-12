@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 
 import com.sudhu.elasticapp.module.domain.DomainVO;
+import com.sudhu.elasticapp.module.domain.ModuleVO;
 import com.sudhu.elasticapp.module.domain.RequestHeaderVO;
 import com.sudhu.elasticapp.module.domain.RequestVO;
 import com.sudhu.elasticapp.module.domain.UserVO;
@@ -137,13 +138,15 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 			map.addValue("added_on", Calendar.getInstance().getTime());
 			map.addValue("added_by", "1");
 			String appToken = requestVO.getQueryName() + ":" + requestId;
+			requestVO.setAppToken(appToken);
 			map.addValue("query_app_token", appToken);
+			requestVO.setStatusId(1);
 		} else {
-			sqlString = " UPDATE t_mquery set " + " query_name = :query_name , query_app_id = :query_app_id,"
+			sqlString = " UPDATE t_mquery set " + " query_app_id = :query_app_id,"
 					+ " query_type_id = :query_type_id, query_string = :query_string, query_freq_id = :query_freq_id,"
-					+ " query_status_id = query_status_id, db_server = :db_server, db_port = :db_port, db_name = :db_name,"
-					+ " db_username = :db_username, db_password= :db_password, db_connection_url : db_connection_url,"
-					+ " db_id = :db_id, modified_by : modified_by, modified_on = :modified_on where query_id = :query_id ";
+					+ " query_status_id = :query_status_id, db_server = :db_server, db_port = :db_port, db_name = :db_name,"
+					+ " db_username = :db_username, db_password= :db_password, db_connection_url = :db_connection_url,"
+					+ " db_id = :db_id, modified_by = :modified_by, modified_on = :modified_on where query_id = :query_id ";
 			map.addValue("modified_on", Calendar.getInstance().getTime());
 			map.addValue("modified_by", "1");
 		}
@@ -154,7 +157,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		map.addValue("query_type_id", requestVO.getQueryType());
 		map.addValue("query_string", requestVO.getQuery());
 		map.addValue("query_freq_id", requestVO.getUpdateFreq());
-		map.addValue("query_status_id", 1);
+		map.addValue("query_status_id", requestVO.getStatusId());
 		map.addValue("db_server", requestVO.getModuleVO().getDbServerName());
 		map.addValue("db_port", requestVO.getModuleVO().getDbPortNumber());
 		map.addValue("db_name", requestVO.getModuleVO().getDataBaseName());
@@ -181,7 +184,10 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		builder.append("inner join t_mdbconfig on t_mdbconfig.db_id = t_mquery.db_id ");
 		builder.append("inner join t_mfrequency on t_mfrequency.freq_id = t_mquery.query_freq_id ");
 		builder.append("inner join t_mstatus on t_mstatus.status_id = t_mquery.query_status_id ");
-		builder.append(" where ");
+
+		if (!searchCriteria.isEmpty()) {
+			builder.append(" where ");
+		}
 		MapSqlParameterSource map = new MapSqlParameterSource();
 
 		for (String key : searchCriteria.keySet()) {
@@ -216,6 +222,51 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		});
 
 		return searchResults;
+	}
+
+	@Override
+	public RequestVO getRequest(int requestId) {
+
+		String sqlString = "SELECT query_id, query_name, query_app_id, query_type_id, query_string, "
+				+ " query_freq_id, query_status_id, db_server, db_port, db_name, db_password, db_username,"
+				+ " db_id, query_app_token "
+				+ " FROM t_mquery WHERE query_id = :query_id";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("query_id", requestId);
+
+		RequestVO requestVO = jdbcOperations.query(sqlString, map, new ResultSetExtractor<RequestVO>() {
+
+			@Override
+			public RequestVO extractData(ResultSet rs) throws SQLException, DataAccessException {
+				RequestVO requestVO = null;
+				if (rs.next()) {
+					requestVO = new RequestVO();
+					requestVO.setRequestId(rs.getInt(1));
+					requestVO.setQueryName(rs.getString(2));
+					requestVO.setProjectId(rs.getInt(3));
+					requestVO.setQueryType(rs.getString(4));
+					requestVO.setQuery(rs.getString(5));
+					requestVO.setUpdateFreq(rs.getInt(6));
+					requestVO.setStatusId(rs.getInt(7));
+					ModuleVO moduleVO = new ModuleVO();
+					moduleVO.setDbServerName(rs.getString(8));
+					moduleVO.setDbPortNumber(rs.getInt(9));
+					moduleVO.setDataBaseName(rs.getString(10));
+					try{
+						moduleVO.setDbPassword(new String(rs.getBytes(11), "UTF-8"));
+					}catch(Exception e){
+						moduleVO.setDbPassword(null);
+					}
+					moduleVO.setDbUserName(rs.getString(12));
+					moduleVO.setDatabaseVendorId(rs.getInt(13));
+					requestVO.setAppToken(rs.getString(14));
+					requestVO.setModuleVO(moduleVO);
+				}
+				return requestVO;
+			}
+		});
+
+		return requestVO;
 	}
 
 	private static class DomainVORowMapper implements RowMapper<DomainVO> {

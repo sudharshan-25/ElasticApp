@@ -101,3 +101,15 @@ input{
 	background-color: lime;
 	color: green;
 }
+
+table {
+    border-collapse: collapse;
+}
+
+table, td, th {
+    border: 1px solid black;
+}
+
+td{
+	padding-left: 10px;
+}

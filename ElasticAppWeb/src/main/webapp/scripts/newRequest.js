@@ -67,7 +67,7 @@ function testDBConnection() {
     $('#messageDiv').hide();
     
     $.ajax({
-        url : 'testDBConnection',
+        url : '/ElasticAppWeb/testDBConnection',
         data : {'module':JSON.stringify(data)},
         contentType : "application/json",
         success: function (result, status, xhr) {
