@@ -2,7 +2,7 @@ package com.sudhu.elasticapp.module.domain;
 
 public class RequestHeaderVO {
 
-	private int queryId;
+	private String queryId = "";
 	
 	private String queryName;
 	
@@ -21,14 +21,14 @@ public class RequestHeaderVO {
 	/**
 	 * @return the queryId
 	 */
-	public int getQueryId() {
+	public String getQueryId() {
 		return queryId;
 	}
 
 	/**
 	 * @param queryId the queryId to set
 	 */
-	public void setQueryId(int queryId) {
+	public void setQueryId(String queryId) {
 		this.queryId = queryId;
 	}
 

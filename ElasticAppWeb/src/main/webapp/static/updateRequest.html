@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<div id="homeContainer">
+    
+    <div id="requestForm" ng-controller="updateRequestController">
+        <div id="newRequestLabel">
+        	<div id="newRequestLabelDiv" >
+	        	<form name="dBConnectionForm" ng-init="loadInitData()">
+		        	<fieldset id="dBConnection">
+		                <legend>Connection Information</legend>
+		                <p>
+		                    <span class="headerLabel">Database Vendor: </span>
+		                    <span class="headerValue">
+		                    
+		                    	<select required="required" ng-model="requestVO.moduleVO.databaseVendorId" ng-change="connectionChecked = false">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.dbTypes" value="{{domain.id}}">{{domain.key}}</option>	                    		
+		                    	</select>                      
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Server (IP/ Name): </span>
+		                    <span class="headerValue">                    	
+		                        <input required="required" ng-model="requestVO.moduleVO.dbServerName" ng-change="connectionChecked = false"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Port Number : </span>
+		                    <span class="headerValue">
+		                        <input required="required" ng-model="requestVO.moduleVO.dbPortNumber" type="number" ng-change="connectionChecked = false"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Database Name : </span>
+		                    <span class="headerValue">
+		                        <input required="required" ng-model="requestVO.moduleVO.dataBaseName" ng-change="connectionChecked = false"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">User Name : </span>
+		                    <span class="headerValue">
+		                        <input required="required" ng-model="requestVO.moduleVO.dbUserName" ng-change="connectionChecked = false"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Password : </span>
+		                    <span class="headerValue">
+		                        <input type="password" ng-model="requestVO.moduleVO.dbPassword" required="required" ng-change="connectionChecked = false"/>
+		                    </span>
+		
+		                </p>
+		                
+						<div class="centeredButton">
+							<button class="btn button" type="button" ng-click="testConnection('dBConnectionForm')">Test Connection</button>
+			                <button class="btn button" type="reset" >Clear</button>
+			                <button class="btn button" type="button" id="section1Next" ng-click="gotoSection2('dBConnectionForm')" ng-disabled="!connectionChecked">Next</button>			                
+			            </div>
+		            </fieldset>
+	            </form>
+	        </div>
+	        <div id="elasticInfoDiv" class="hide">
+	        	<form name="elasticInfoForm">
+		            <fieldset id="elasticInfo">
+		            	<legend>Elastic Information</legend>
+		            	<p>
+		                    <span class="headerLabel">Project Name : </span>
+		                    <span class="headerValue">
+		                    	<select required="required" ng-model="requestVO.projectId" disabled="disabled">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.availableProjects" value="{{domain.id}}">{{domain.key}}</option>
+		                    	</select>
+		                    </span>
+		                    <span class="headerValue">
+		                    	<label>Used as Index Name in Elastic Searh Engine</label>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Query Name : </span>
+		                    <span class="headerValue">
+		                        <input id="queryName" class="mandatory" required="required" ng-model="requestVO.queryName" disabled="disabled"/>
+		                    </span>
+		                    <span class="headerValue">
+		                    	<label>Used as Type Name in Elastic Searh Engine</label>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Application Token : </span>
+		                    <span class="headerValue">
+		                        <input id="appToken" class="mandatory" required="required" ng-model="requestVO.appToken" disabled="disabled"/>
+		                    </span>
+		                    <span class="headerValue">
+		                    	<label>Used as Type Name in Elastic Searh Engine</label>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Query : </span>
+		                    <span class="headerValue">
+		                        <textarea id="query" required="required" rows="5" ng-model="requestVO.query" cols="30" disabled="disabled"
+		                        	ng-blur="columnMapped = false"></textarea>
+		                    </span>
+		                </p>
+		                <div ng-show="requestVO.columnMapping.length > 0" style="margin-bottom: 10px;">
+			                   <span class="headerLabel">Column Mapping : </span>
+			                   <div align="center">
+				                   <table  ng-show="requestVO.columnMapping.length > 0">
+				                   		<thead>
+				                   			<tr>
+				                   				<td>Id Column</td>
+				                   				<td>Column Name</td>
+				                   				<td>Elastic DataType</td>
+				                   				<td>Indexed</td>
+				                   				<td>Modified Date Column </td>
+				                   			</tr>
+				                   		</thead>
+				                   		<tbody>	                   
+											<tr ng-repeat="column in requestVO.columnMapping">
+												<td><input type="radio" name="idColumn" ng-model="requestVO.idColumn" value="{{column.columnName}}" 
+														ng-checked="requestVO.idColumn" required="required" disabled="disabled"/> </td>
+												<td>{{column.columnName}}</td>
+												<td><select name="queryDataType" required="required" ng-model="column.queryDataType" disabled="disabled">
+														<option value="">Select One</option>
+														<option ng-repeat="domain in requestForm.dataTypeList" value="{{domain.id}}">{{domain.value}}</option>
+													</select>
+												</td>
+												<td>
+													<input type="checkbox" ng-checked="column.indexed" ng-model="column.indexed" disabled="disabled"/>
+												</td>
+												<td>
+													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
+														ng-checked="requestVO.modifiedColumn" required="required" disabled="disabled">
+												</td>
+											</tr>	                   			
+				                   		</tbody>
+				                   </table>
+			                   </div>
+						</div>
+						<div  class="centeredButton">
+							<button class="btn button" type="button" id="section2Back" ng-click="gotoSection1('elasticInfoForm', true)">Back</button>
+							<button class="btn button" type="reset" >Clear</button>
+			                <button class="btn button" type="button" id="section2Next" ng-click="gotoSection3('elasticInfoForm')">Next</button>
+			            </div>
+		            </fieldset>
+		     	</form>
+	         </div>
+	         <div id="QueryTypeDiv" class="hide">
+	         	<form name="QueryTypeForm">                 
+		            <fieldset id="QueryType">
+		                <legend>Query Information</legend>
+		                
+		                <p>
+		                    <span class="headerLabel">Query Type : </span>
+		                    <span class="headerValue">
+			                    <select required="required" name="queryType" ng-model="requestVO.queryType">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.queryTypes" value="{{domain.id}}">{{domain.value}}</option>
+		                    	</select>                    
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Frequency : </span>
+		                    <span class="headerValue">
+		                    	<select required="required" name="updateFreq" ng-model="requestVO.updateFreq">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.updateFreqList" value="{{domain.id}}">{{domain.value}}</option>
+		                    	</select>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Query Status : </span>
+		                    <span class="headerValue">
+		                    	<select required="required" name="updateFreq" ng-model="requestVO.statusId">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.statusList" value="{{domain.id}}">{{domain.value}}</option>
+		                    	</select>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Email Notification : </span>
+		                    <span class="headerValue">
+		                    	<input id="emailNotification" class="mandatory" required="required" ng-model="requestVO.emailNotification" type="email"/>
+		                    </span>
+		                </p>
+		            </fieldset>
+		            <div class="centeredButton">
+						<button class="btn button" type="button" id="section3" ng-click="gotoSection2('QueryTypeForm', true)">Back</button>
+		                <button class="btn button" type="reset" >Clear</button>
+		                <button class="btn button" type="button" ng-click="saveRequest('QueryTypeForm')">Save</button>		                
+		            </div>
+		        </form>
+				
+			</div>            
+        </div>
+    </div>
+</div>
+</html>

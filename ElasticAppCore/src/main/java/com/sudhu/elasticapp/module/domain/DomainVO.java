@@ -5,34 +5,43 @@ package com.sudhu.elasticapp.module.domain;
  */
 public class DomainVO {
 
-    private int id;
+	public DomainVO() {
 
-    private String key;
+	}
 
-    private String value;
+	public DomainVO(String id, String key, String value) {
+		this.id = id;
+		this.key = key;
+		this.value = value;
+	}
 
+	private String id = "";
 
-    public int getId() {
-        return id;
-    }
+	private String key;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	private String value;
 
-    public String getKey() {
-        return key;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public String getKey() {
+		return key;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

@@ -1,26 +1,40 @@
 package com.sudhu.elasticapp.main.init;
 
-import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import javax.servlet.Filter;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-/**
- * Created by sudha on 01-Oct-16.
- */
-public class WebAppInitialiser implements WebApplicationInitializer {
+public class WebAppInitialiser extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(ApplicationBeanContext.class);
-        servletContext.addListener(new ContextLoaderListener(context));
-        ServletRegistration.Dynamic servlet = servletContext.addServlet("spring", new DispatcherServlet(context));
-        servlet.addMapping("/");
-        servlet.setLoadOnStartup(0);
-    }
+	/*
+	 * @Override public void onStartup(ServletContext servletContext) throws
+	 * ServletException { AnnotationConfigWebApplicationContext context = new
+	 * AnnotationConfigWebApplicationContext();
+	 * context.register(ApplicationBeanContext.class);
+	 * servletContext.addListener(new ContextLoaderListener(context));
+	 * ServletRegistration.Dynamic servlet = servletContext.addServlet("spring",
+	 * new DispatcherServlet(context)); servlet.addMapping("/");
+	 * servlet.setLoadOnStartup(0); }
+	 */
 
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		return new Class[] { ApplicationBeanContext.class };
+	}
+
+	@Override
+	protected Class<?>[] getServletConfigClasses() {
+		return null;
+	}
+
+	@Override
+	protected String[] getServletMappings() {
+		return new String[] { "/" };
+	}
+
+	@Override
+	protected Filter[] getServletFilters() {
+		Filter[] singleton = { new CORSFilter() };
+		return singleton;
+	}
 }

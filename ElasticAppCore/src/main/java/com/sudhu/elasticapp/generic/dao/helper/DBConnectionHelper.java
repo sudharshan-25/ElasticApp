@@ -3,7 +3,12 @@ package com.sudhu.elasticapp.generic.dao.helper;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,85 +22,151 @@ import com.sudhu.elasticapp.module.domain.ModuleVO;
  */
 public class DBConnectionHelper {
 
-    private static DBConnectionHelper instance;
+	private static DBConnectionHelper instance;
 
-    public final Logger LOGGER = LogManager.getLogger(DBConnectionHelper.class);
+	public final Logger LOGGER = LogManager.getLogger(DBConnectionHelper.class);
 
-    private DBConnectionHelper(){
+	private DBConnectionHelper() {
 
-    }
+	}
 
-    private static synchronized void initialize(){
-        if(null == instance){
-            instance = new DBConnectionHelper();
-        }
-    }
+	private static synchronized void initialize() {
+		if (null == instance) {
+			instance = new DBConnectionHelper();
+		}
+	}
 
-    public static DBConnectionHelper getInstance(){
-        if(null == instance){
-            initialize();
-        }
-        return instance;
-    }
+	public static DBConnectionHelper getInstance() {
+		if (null == instance) {
+			initialize();
+		}
+		return instance;
+	}
 
-    public void checkConnection(DBConnectionVO connectionVO) throws DBConnectionException{
-        
-        Connection connection = null;
-        try {
-            Driver driver = connectionVO.getDbType().newInstance();
-            DriverManager.registerDriver(driver);
-            String connectionString = connectionVO.getConnectionString();
-            String userName = connectionVO.getUserName();
-            String passWord = connectionVO.getPassword();
+	public void checkConnection(DBConnectionVO connectionVO) throws DBConnectionException {
 
-            if (null == userName){
-                connection = DriverManager.getConnection(connectionString);
-            }else{
-                connection = DriverManager.getConnection(connectionString,userName,passWord);
-            }
-            
-        }catch (Exception ex){
-            throw new DBConnectionException(ex);
-        }finally {
-            if (null != connection){
-                try {
-                    connection.close();
-                }catch (SQLException e){
+		Connection connection = null;
+		try {
+			Driver driver = connectionVO.getDbType().newInstance();
+			DriverManager.registerDriver(driver);
+			String connectionString = connectionVO.getConnectionString();
+			String userName = connectionVO.getUserName();
+			String passWord = connectionVO.getPassword();
 
-                }
-            }
-        }
-    }
+			if (null == userName) {
+				connection = DriverManager.getConnection(connectionString);
+			} else {
+				connection = DriverManager.getConnection(connectionString, userName, passWord);
+			}
 
-    public DBConnectionVO getConnectionVO(ModuleVO moduleVO){
-        DBConnectionVO connectionVO = new DBConnectionVO();
+		} catch (Exception ex) {
+			throw new DBConnectionException(ex);
+		} finally {
+			if (null != connection) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
 
-        if(null != moduleVO){
-            int vendorID = moduleVO.getDatabaseVendorId();
-            String connectionURL = "";
-            if(vendorID==1){
-                connectionURL = "jdbc:mysql://";
-                connectionVO.setDbType(com.mysql.cj.jdbc.Driver.class);
-            }else if (vendorID == 2){
-                connectionURL = "jdbc:microsoft:sqlserver://";
-                connectionVO.setDbType(null);
-            }
+				}
+			}
+		}
+	}
 
-            connectionURL += moduleVO.getDbServerName() + ":" + moduleVO.getDbPortNumber();
+	public Map<String, Integer> checkQuery(DBConnectionVO connectionVO, String query) throws DBConnectionException {
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet rs = null;
+		Map<String, Integer> columnDataType = new LinkedHashMap<>();
+		try {
+			Driver driver = connectionVO.getDbType().newInstance();
+			DriverManager.registerDriver(driver);
+			String connectionString = connectionVO.getConnectionString();
+			String userName = connectionVO.getUserName();
+			String passWord = connectionVO.getPassword();
 
-            if(vendorID==1){
-                connectionURL += "/" + moduleVO.getDataBaseName();
-                connectionURL += "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-                
-            }else if (vendorID == 2){
-                connectionURL += ";DataBaseName=" + moduleVO.getDataBaseName();
-            }
-            connectionVO.setConnectionString(connectionURL);
-            connectionVO.setUserName(moduleVO.getDbUserName());
-            connectionVO.setPassword(moduleVO.getDbPassword());
+			if (null == userName) {
+				connection = DriverManager.getConnection(connectionString);
+			} else {
+				connection = DriverManager.getConnection(connectionString, userName, passWord);
+			}
 
-        }
+			if (query.contains("LIMIT")) {
+				query.replaceAll("LIMIT\\s*\\d+", "LIMIT 1");
+			} else {
+				query.concat("LIMIT 1");
+			}
 
-        return connectionVO;
-    }
+			statement = connection.createStatement();
+			rs = statement.executeQuery(query);
+			if (rs.next()) {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int columnCount = rsmd.getColumnCount();
+				for (int i = 0; i < columnCount; i++) {
+					columnDataType.put(rsmd.getColumnLabel(i+1), rsmd.getColumnType(i+1));
+				}
+
+			}
+
+		} catch (Exception ex) {
+			throw new DBConnectionException(ex);
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException exception) {
+
+				}
+			}
+
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exception) {
+
+				}
+			}
+
+			if (null != connection) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+
+				}
+			}
+		}
+
+		return columnDataType;
+	}
+
+	public DBConnectionVO getConnectionVO(ModuleVO moduleVO) {
+		DBConnectionVO connectionVO = new DBConnectionVO();
+
+		if (null != moduleVO) {
+			String vendorID = moduleVO.getDatabaseVendorId();
+			String connectionURL = "";
+			if ("1".equals(vendorID)) {
+				connectionURL = "jdbc:mysql://";
+				connectionVO.setDbType(com.mysql.cj.jdbc.Driver.class);
+			} else if ("2".equals(vendorID)) {
+				connectionURL = "jdbc:microsoft:sqlserver://";
+				connectionVO.setDbType(null);
+			}
+
+			connectionURL += moduleVO.getDbServerName() + ":" + moduleVO.getDbPortNumber();
+
+			if ("1".equals(vendorID)) {
+				connectionURL += "/" + moduleVO.getDataBaseName();
+				connectionURL += "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
+			} else if ("2".equals(vendorID)) {
+				connectionURL += ";DataBaseName=" + moduleVO.getDataBaseName();
+			}
+			connectionVO.setConnectionString(connectionURL);
+			connectionVO.setUserName(moduleVO.getDbUserName());
+			connectionVO.setPassword(moduleVO.getDbPassword());
+
+		}
+
+		return connectionVO;
+	}
 }

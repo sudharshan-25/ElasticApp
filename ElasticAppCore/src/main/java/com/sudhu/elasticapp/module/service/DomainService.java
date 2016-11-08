@@ -14,31 +14,31 @@ import com.sudhu.elasticapp.module.domain.DomainVO;
 @Service
 public class DomainService {
 
-    @Autowired
-    private ElasticAppDAO elasticAppDAO;
+	@Autowired
+	private ElasticAppDAO elasticAppDAO;
 
-    
-    public List<DomainVO> getApplciationList(){
-        return elasticAppDAO.getApplciationList();
-    }
+	public List<DomainVO> getApplciationList() {
+		return elasticAppDAO.getApplciationList();
+	}
 
-    
-    public List<DomainVO> getQueryTypes(){
-        return elasticAppDAO.getQueryTypes();
-    }
+	public List<DomainVO> getQueryTypes() {
+		return elasticAppDAO.getQueryTypes();
+	}
 
-    
-    public List<DomainVO> getStatusList(){
-        return elasticAppDAO.getStatusList();
-    }
+	public List<DomainVO> getStatusList() {
+		return elasticAppDAO.getStatusList();
+	}
 
-    
-    public List<DomainVO> getFrequencyList(){
-        return elasticAppDAO.getFrequencyList();
-    }
-    
-    
-    public List<DomainVO> getDBTypeList(){
-        return elasticAppDAO.getDBTypeList();
-    }
+	public List<DomainVO> getFrequencyList() {
+		return elasticAppDAO.getFrequencyList();
+	}
+
+	public List<DomainVO> getDBTypeList() {
+		return elasticAppDAO.getDBTypeList();
+	}
+
+	public List<DomainVO> getDataTypeList() {
+		return elasticAppDAO.getDataTypeList();
+	}
+
 }

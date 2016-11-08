@@ -1,42 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>ElasticApp</artifactId>
-        <groupId>com.sudhu.elasticapp</groupId>
-        <version>1.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.sudhu.elasticapp</groupId>
+		<artifactId>ElasticApp</artifactId>
+		<version>1.0</version>
+	</parent>
+	<artifactId>ElasticAppEar</artifactId>
+	<packaging>ear</packaging>
 
-    <artifactId>ElasticAppEar</artifactId>
-    <packaging>ear</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.sudhu.elasticapp</groupId>
-            <artifactId>ElasticAppWeb</artifactId>
-            <version>1.0</version>
-            <type>war</type>
-
-        </dependency>
-        <dependency>
-            <groupId>com.sudhu.elasticapp</groupId>
-            <artifactId>ElasticAppCore</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ear-plugin</artifactId>
-                <version>2.3.2</version>
-            </plugin>
-        </plugins>
-
-    </build>
-
+	<dependencies>
+		<dependency>
+			<groupId>com.sudhu.elasticapp</groupId>
+			<artifactId>ElasticAppWeb</artifactId>
+			<version>1.0</version>
+			<type>war</type>
+		</dependency>
+	</dependencies>
 </project>

@@ -5,74 +5,73 @@ package com.sudhu.elasticapp.module.domain;
  */
 public class ModuleVO {
 
-    private int databaseVendorId;
+	private String databaseVendorId = "";
 
-    private String dataBaseName;
+	private String dataBaseName;
 
-    private String dbServerName;
+	private String dbServerName;
 
-    private int dbPortNumber;
+	private int dbPortNumber;
 
-    private String dbConnectionURL;
+	private String dbConnectionURL;
 
-    private String dbUserName;
+	private String dbUserName;
 
-    private String dbPassword;
+	private String dbPassword;
 
+	public String getDataBaseName() {
+		return dataBaseName;
+	}
 
-    public String getDataBaseName() {
-        return dataBaseName;
-    }
+	public void setDataBaseName(String dataBaseName) {
+		this.dataBaseName = dataBaseName;
+	}
 
-    public void setDataBaseName(String dataBaseName) {
-        this.dataBaseName = dataBaseName;
-    }
+	public String getDbServerName() {
+		return dbServerName;
+	}
 
-    public String getDbServerName() {
-        return dbServerName;
-    }
+	public void setDbServerName(String dbServerName) {
+		this.dbServerName = dbServerName;
+	}
 
-    public void setDbServerName(String dbServerName) {
-        this.dbServerName = dbServerName;
-    }
+	public String getDbConnectionURL() {
+		return dbConnectionURL;
+	}
 
-    public String getDbConnectionURL() {
-        return dbConnectionURL;
-    }
+	public void setDbConnectionURL(String dbConnectionURL) {
+		this.dbConnectionURL = dbConnectionURL;
+	}
 
-    public void setDbConnectionURL(String dbConnectionURL) {
-        this.dbConnectionURL = dbConnectionURL;
-    }
+	public String getDbUserName() {
+		return dbUserName;
+	}
 
-    public String getDbUserName() {
-        return dbUserName;
-    }
+	public void setDbUserName(String dbUserName) {
+		this.dbUserName = dbUserName;
+	}
 
-    public void setDbUserName(String dbUserName) {
-        this.dbUserName = dbUserName;
-    }
+	public String getDbPassword() {
+		return dbPassword;
+	}
 
-    public String getDbPassword() {
-        return dbPassword;
-    }
+	public void setDbPassword(String dbPassword) {
+		this.dbPassword = dbPassword;
+	}
 
-    public void setDbPassword(String dbPassword) {
-        this.dbPassword = dbPassword;
-    }
+	public String getDatabaseVendorId() {
+		return databaseVendorId;
+	}
 
-    public int getDatabaseVendorId() {
-        return databaseVendorId;
-    }
+	public void setDatabaseVendorId(String databaseVendorId) {
+		this.databaseVendorId = databaseVendorId;
+	}
 
-    public void setDatabaseVendorId(int databaseVendorId) {
-        this.databaseVendorId = databaseVendorId;
-    }
+	public int getDbPortNumber() {
+		return dbPortNumber;
+	}
 
-    public int getDbPortNumber() {
-        return dbPortNumber;
-    }
-
-    public void setDbPortNumber(int dbPortNumber) {
-        this.dbPortNumber = dbPortNumber;
-    }
+	public void setDbPortNumber(int dbPortNumber) {
+		this.dbPortNumber = dbPortNumber;
+	}
 }

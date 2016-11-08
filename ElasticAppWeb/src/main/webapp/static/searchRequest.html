@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<div id="homeContainer">
+	<div id="searchRequestForm" ng-controller="searchController" ng-init="loadInitData()">
+		<div>
+			<form>
+				<fieldset>
+					<legend>Search Criteria</legend>
+					<p>
+						<span class="headerLabel">Query Name : </span> <span
+							class="headerValue"> <input name="queryName" id="queryName" ng-model="searchRequestForm.queryName" required="required"  />
+						</span>
+					</p>
+					<p>
+						<span class="headerLabel">Query Type : </span> <span
+							class="headerValue"> <select name="queryType" id="queryType" ng-model="searchRequestForm.queryType">
+								<option value="">Select One</option>					
+								<option ng-repeat="domain in searchRequestForm.queryTypes" value="{{domain.id}}">{{domain.value}}</option>
+						</select>
+						</span>
+					</p>
+					<p>
+						<span class="headerLabel">Project Name : </span> <span
+							class="headerValue"> <select name="projectId" id="projectId" ng-model="searchRequestForm.projectId">
+								<option value="">Select One</option>
+								<option ng-repeat="domain in searchRequestForm.availableProjects" value="{{domain.id}}">{{domain.key}}</option>						
+						</select>
+						</span>
+					</p>
+					<p>
+						<span class="headerLabel">DB Type : </span> <span
+							class="headerValue"> <select name="dbType" id="dbType" ng-model="searchRequestForm.dbType">
+								<option value="">Select One</option>
+								<option ng-repeat="domain in searchRequestForm.dbTypes" value="{{domain.id}}">{{domain.key}}</option>
+						</select>
+						</span>
+					</p>
+					<p>
+						<span class="headerLabel">Update Frequency: </span> <span
+							class="headerValue"> <select name="updateFreq" ng-model="searchRequestForm.updateFreq"
+							id="updateFreq">
+								<option value="">Select One</option>
+								<option ng-repeat="domain in searchRequestForm.updateFreqList" value="{{domain.id}}">{{domain.value}}</option>
+						</select>
+						</span>
+					</p>
+					<p>
+						<span class="headerLabel">Current Status: </span> <span
+							class="headerValue"> <select name="statusId" id="statusId" ng-model="searchRequestForm.statusId">
+								<option value="">Select One</option>
+								<option ng-repeat="domain in searchRequestForm.statusList" value="{{domain.id}}">{{domain.value}}</option>
+								
+						</select>
+						</span>
+					</p>
+					<p>
+						<span class="headerLabel">
+							<button class="button" type="submit" ng-click="searchRequests()">Search</button>
+						</span>
+						<span class="headerLabel">
+							<button class="button" type="reset">Reset</button>
+						</span>
+					</p>
+				</fieldset>
+			</form>
+		</div>
+		<div id="searchResults" ng-show="searchRequestForm.searchResults.length > 0">
+			<fieldset>
+				<legend>Search Results</legend>
+				<table style="border : 1px solid black; width:100%;">
+					<thead>
+						<tr>
+							<th nowrap="nowrap" width="15%">Query Name</th>
+							<th nowrap="nowrap" width="20%">Application Token</th>
+							<th nowrap="nowrap" width="20%">Application name</th>
+							<th nowrap="nowrap" width="15%">Database type</th>
+							<th nowrap="nowrap" width="15%">Frequency</th>
+							<th nowrap="nowrap" width="15%">Status</th>								
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="searchResult in searchRequestForm.searchResults">
+							<td nowrap="nowrap">
+								<a href="#updateRequest/{{searchResult.queryId}}">{{searchResult.queryName}}</a>
+							</td>
+							<td nowrap="nowrap">{{searchResult.appToken}}</td>
+							<td nowrap="nowrap">{{searchResult.queryApplication}}</td>
+							<td nowrap="nowrap">{{searchResult.queryType}}</td>
+							<td nowrap="nowrap">{{searchResult.queryFrequency}}</td>
+							<td nowrap="nowrap">{{searchResult.queryStatus}}</td>
+						</tr>				
+					</tbody>
+				</table>
+			</fieldset>
+		</div>
+	</div>
+</div>
+</html>

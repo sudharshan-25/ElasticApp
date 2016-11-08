@@ -1,36 +1,66 @@
 package com.sudhu.elasticapp.module.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RequestVO {
 
-	private int requestId;
-	
-	private String appToken;
-	
-	private ModuleVO moduleVO;
-	
-	private String queryName;
-	
-	private int projectId;
-	
-	private String queryType ;
-	
-	private String query;
-	
-	private int updateFreq;
+	private String requestId = "";
 
-	private int statusId;
+	private String appToken;
+
+	private ModuleVO moduleVO;
+
+	private List<ColumnMappingVO> columnMapping;
+
+	private String queryName;
+
+	private String projectId = "";
+
+	private String queryType="";
+
+	private String query;
+
+	private String updateFreq="";
+
+	private String statusId="";
+
+	private String idColumn = "";
 	
+	private String modifiedColumn = "";
+	
+	private String emailNotification;
+	
+	/**
+	 * @return the columnMapping
+	 */
+	public List<ColumnMappingVO> getColumnMapping() {
+		if (this.columnMapping == null) {
+			this.columnMapping = new ArrayList<>();
+		}
+		return columnMapping;
+	}
+
+	/**
+	 * @param columnMapping
+	 *            the columnMapping to set
+	 */
+	public void setColumnMapping(List<ColumnMappingVO> columnMapping) {
+		this.columnMapping = columnMapping;
+	}
+
 	/**
 	 * @return the requestId
 	 */
-	public int getRequestId() {
+	public String getRequestId() {
 		return requestId;
 	}
 
 	/**
-	 * @param requestId the requestId to set
+	 * @param requestId
+	 *            the requestId to set
 	 */
-	public void setRequestId(int requestId) {
+	public void setRequestId(String requestId) {
 		this.requestId = requestId;
 	}
 
@@ -42,7 +72,8 @@ public class RequestVO {
 	}
 
 	/**
-	 * @param appToken the appToken to set
+	 * @param appToken
+	 *            the appToken to set
 	 */
 	public void setAppToken(String appToken) {
 		this.appToken = appToken;
@@ -56,7 +87,8 @@ public class RequestVO {
 	}
 
 	/**
-	 * @param moduleVO the moduleVO to set
+	 * @param moduleVO
+	 *            the moduleVO to set
 	 */
 	public void setModuleVO(ModuleVO moduleVO) {
 		this.moduleVO = moduleVO;
@@ -70,7 +102,8 @@ public class RequestVO {
 	}
 
 	/**
-	 * @param queryName the queryName to set
+	 * @param queryName
+	 *            the queryName to set
 	 */
 	public void setQueryName(String queryName) {
 		this.queryName = queryName;
@@ -79,14 +112,15 @@ public class RequestVO {
 	/**
 	 * @return the projectId
 	 */
-	public int getProjectId() {
+	public String getProjectId() {
 		return projectId;
 	}
 
 	/**
-	 * @param projectId the projectId to set
+	 * @param projectId
+	 *            the projectId to set
 	 */
-	public void setProjectId(int projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
@@ -98,7 +132,8 @@ public class RequestVO {
 	}
 
 	/**
-	 * @param queryType the queryType to set
+	 * @param queryType
+	 *            the queryType to set
 	 */
 	public void setQueryType(String queryType) {
 		this.queryType = queryType;
@@ -112,7 +147,8 @@ public class RequestVO {
 	}
 
 	/**
-	 * @param query the query to set
+	 * @param query
+	 *            the query to set
 	 */
 	public void setQuery(String query) {
 		this.query = query;
@@ -121,31 +157,73 @@ public class RequestVO {
 	/**
 	 * @return the updateFreq
 	 */
-	public int getUpdateFreq() {
+	public String getUpdateFreq() {
 		return updateFreq;
 	}
 
 	/**
-	 * @param updateFreq the updateFreq to set
+	 * @param updateFreq
+	 *            the updateFreq to set
 	 */
-	public void setUpdateFreq(int updateFreq) {
+	public void setUpdateFreq(String updateFreq) {
 		this.updateFreq = updateFreq;
 	}
 
 	/**
 	 * @return the statusId
 	 */
-	public int getStatusId() {
+	public String getStatusId() {
 		return statusId;
 	}
 
 	/**
-	 * @param statusId the statusId to set
+	 * @param statusId
+	 *            the statusId to set
 	 */
-	public void setStatusId(int statusId) {
+	public void setStatusId(String statusId) {
 		this.statusId = statusId;
 	}
-	
-	
-	
+
+	/**
+	 * @return the idColumn
+	 */
+	public String getIdColumn() {
+		return idColumn;
+	}
+
+	/**
+	 * @param idColumn the idColumn to set
+	 */
+	public void setIdColumn(String idColumn) {
+		this.idColumn = idColumn;
+	}
+
+	/**
+	 * @return the modifiedColumn
+	 */
+	public String getModifiedColumn() {
+		return modifiedColumn;
+	}
+
+	/**
+	 * @param modifiedColumn the modifiedColumn to set
+	 */
+	public void setModifiedColumn(String modifiedColumn) {
+		this.modifiedColumn = modifiedColumn;
+	}
+
+	/**
+	 * @return the emailNotification
+	 */
+	public String getEmailNotification() {
+		return emailNotification;
+	}
+
+	/**
+	 * @param emailNotification the emailNotification to set
+	 */
+	public void setEmailNotification(String emailNotification) {
+		this.emailNotification = emailNotification;
+	}
+
 }

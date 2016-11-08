@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<div id="homeContainer">
+    
+    <div id="requestForm" ng-controller="summaryController" ng-init="initDBConnection()">
+        <div id="newRequestLabel">
+        	<div id="newRequestLabelDiv" >
+	        	<form name="dBConnectionForm" >
+		        	<fieldset id="dBConnection">
+		                <legend>Connection Information</legend>
+		                <p>
+		                    <span class="headerLabel">Database Vendor: </span>
+		                    <span class="headerValue">
+		                    	<select required="required" ng-model="requestVO.moduleVO.databaseVendorId" disabled="disabled">
+		                    		<option ng-repeat="domain in requestForm.dbTypes" value="{{domain.id}}">{{domain.key}}</option>	                    		
+		                    	</select>                      
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Server (IP/ Name): </span>
+		                    <span class="headerValue">                    	
+		                        <input required="required" ng-model="requestVO.moduleVO.dbServerName" disabled="disabled"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Port Number : </span>
+		                    <span class="headerValue">
+		                        <input required="required" ng-model="requestVO.moduleVO.dbPortNumber" type="number" disabled="disabled"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Database Name : </span>
+		                    <span class="headerValue">
+		                        <input required="required" ng-model="requestVO.moduleVO.dataBaseName" disabled="disabled"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">User Name : </span>
+		                    <span class="headerValue">
+		                        <input required="required" ng-model="requestVO.moduleVO.dbUserName" disabled="disabled"/>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Password : </span>
+		                    <span class="headerValue">
+		                        <input type="password" ng-model="requestVO.moduleVO.dbPassword" required="required" disabled="disabled"/>
+		                    </span>
+		
+		                </p>		                
+		            </fieldset>
+	            </form>
+	        </div>
+	        <div id="elasticInfoDiv">
+	        	<form name="elasticInfoForm">
+		            <fieldset id="elasticInfo">
+		            	<legend>Elastic Information</legend>
+		            	<p>
+		                    <span class="headerLabel">Project Name : </span>
+		                    <span class="headerValue">
+		                    	<select required="required" ng-model="requestVO.projectId" disabled="disabled">
+		                    		<option ng-repeat="domain in requestForm.availableProjects" value="{{domain.id}}">{{domain.key}}</option>
+		                    	</select>
+		                    </span>
+		                    <span class="headerValue">
+		                    	<label>Used as Index Name in Elastic Searh Engine</label>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Query Name : </span>
+		                    <span class="headerValue">
+		                        <input id="queryName" class="mandatory" required="required" ng-model="requestVO.queryName" disabled="disabled"/>
+		                    </span>
+		                    <span class="headerValue">
+		                    	<label>Used as Type Name in Elastic Searh Engine</label>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Query : </span>
+		                    <span class="headerValue">
+		                        <textarea id="query" required="required" rows="5" ng-model="requestVO.query"  cols="30" disabled="disabled"
+		                        	ng-blur="columnMapped = false"></textarea>
+		                    </span>
+		                </p>
+		                 <p>
+		                    <span class="headerLabel">App Token: </span>
+		                    <span class="headerValue">
+		                    	<input id="appToken" class="mandatory" required="required" ng-model="requestVO.appToken" disabled="disabled"/>
+		                    </span>
+		                </p>
+		                <div ng-show="requestVO.columnMapping.length > 0" style="margin-bottom: 10px;">
+			                   <span class="headerLabel">Column Mapping : </span>
+			                   <div align="center">
+				                   <table  ng-show="requestVO.columnMapping.length > 0">
+				                   		<thead>
+				                   			<tr>
+				                   				<td>Id Column</td>
+				                   				<td>Column Name</td>
+				                   				<td>Elastic DataType</td>
+				                   				<td>Indexed</td>
+				                   				<td>Modified Date Column </td>
+				                   			</tr>
+				                   		</thead>
+				                   		<tbody>	                   
+											<tr ng-repeat="column in requestVO.columnMapping">
+												<td><input type="radio" name="idColumn" ng-model="requestVO.idColumn" value="{{column.columnName}}" 
+														ng-checked="requestVO.idColumn" required="required" disabled="disabled"/> </td>
+												<td>{{column.columnName}}</td>
+												<td><select name="queryDataType" required="required" ng-model="column.queryDataType" disabled="disabled">
+														<option ng-repeat="domain in requestForm.dataTypeList" value="{{domain.id}}">{{domain.value}}</option>
+													</select>
+												</td>
+												<td>
+													<input type="checkbox" ng-checked="column.indexed" ng-model="column.indexed" disabled="disabled"/>
+												</td>
+												<td>
+													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
+														ng-checked="requestVO.modifiedColumn" required="required" disabled="disabled">
+												</td>
+											</tr>	                   			
+				                   		</tbody>
+				                   </table>
+			                   </div>
+						</div>						
+		            </fieldset>
+		     	</form>
+	         </div>
+	         <div id="QueryTypeDiv">
+	         	<form name="QueryTypeForm">                 
+		            <fieldset id="QueryType">
+		                <legend>Query Information</legend>
+		                
+		                <p>
+		                    <span class="headerLabel">Query Type : </span>
+		                    <span class="headerValue">
+			                    <select required="required" name="queryType" ng-model="requestVO.queryType" disabled="disabled">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.queryTypes" value="{{domain.id}}">{{domain.value}}</option>
+		                    	</select>                    
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Frequency : </span>
+		                    <span class="headerValue">
+		                    	<select required="required" name="updateFreq" ng-model="requestVO.updateFreq" disabled="disabled">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.updateFreqList" value="{{domain.id}}">{{domain.value}}</option>
+		                    	</select>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Query Status : </span>
+		                    <span class="headerValue">
+		                    	<select required="required" name="updateFreq" ng-model="requestVO.statusId" disabled="disabled">
+		                    		<option value="">Select One</option>
+		                    		<option ng-repeat="domain in requestForm.statusList" value="{{domain.id}}">{{domain.value}}</option>
+		                    	</select>
+		                    </span>
+		                </p>
+		                <p>
+		                    <span class="headerLabel">Email Notification : </span>
+		                    <span class="headerValue">
+		                    	<input id="emailNotification" required="required" ng-model="requestVO.emailNotification" type="email" disabled="disabled"/>
+		                    </span>
+		                </p>
+		            </fieldset>		        
+		        </form>
+				
+			</div>            
+        </div>
+    </div>
+</div>
+</html>
