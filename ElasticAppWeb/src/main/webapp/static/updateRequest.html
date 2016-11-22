@@ -96,39 +96,47 @@
 		                <p>
 		                    <span class="headerLabel">Query : </span>
 		                    <span class="headerValue">
-		                        <textarea id="query" required="required" rows="5" ng-model="requestVO.query" cols="30" disabled="disabled"
-		                        	ng-blur="columnMapped = false"></textarea>
+		                        <textarea id="query" required="required" rows="5" ng-model="requestVO.query" cols="30" ng-change="columnMapped = false; queryChanged = true"></textarea>
+		                    </span>
+		                     <span class="headerValue">
+		                    	<label>Changing query needs reindexing elastic Search</label>
 		                    </span>
 		                </p>
-		                <div ng-show="requestVO.columnMapping.length > 0" style="margin-bottom: 10px;">
+		                <div ng-show="requestVO.columnMapping.length > 0 && columnMapped" style="margin-bottom: 10px;">
 			                   <span class="headerLabel">Column Mapping : </span>
 			                   <div align="center">
 				                   <table  ng-show="requestVO.columnMapping.length > 0">
 				                   		<thead>
 				                   			<tr>
-				                   				<td>Id Column</td>
-				                   				<td>Column Name</td>
-				                   				<td>Elastic DataType</td>
-				                   				<td>Indexed</td>
-				                   				<td>Modified Date Column </td>
+				                   				<td width="5%">Id Column</td>
+				                   				<td width="20%">Column Name</td>
+				                   				<td width="25%">Elastic DataType</td>
+				                   				<td width="10%">Analyzed</td>
+				                   				<td width="10%">Analyzer Type</td>
+				                   				<td width="5%">Modified Date Column </td>
 				                   			</tr>
 				                   		</thead>
 				                   		<tbody>	                   
 											<tr ng-repeat="column in requestVO.columnMapping">
 												<td><input type="radio" name="idColumn" ng-model="requestVO.idColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.idColumn" required="required" disabled="disabled"/> </td>
+														ng-checked="requestVO.idColumn" required="required" ng-disabled="!columnMapped || !queryChanged"/> </td>
 												<td>{{column.columnName}}</td>
-												<td><select name="queryDataType" required="required" ng-model="column.queryDataType" disabled="disabled">
+												<td><select name="queryDataType" required="required" ng-model="column.queryDataType" ng-disabled="!columnMapped || !queryChanged">
 														<option value="">Select One</option>
 														<option ng-repeat="domain in requestForm.dataTypeList" value="{{domain.id}}">{{domain.value}}</option>
 													</select>
 												</td>
 												<td>
-													<input type="checkbox" ng-checked="column.indexed" ng-model="column.indexed" disabled="disabled"/>
+													<input type="checkbox" ng-checked="column.analysed" ng-model="column.analysed" ng-disabled="!columnMapped || !queryChanged"/>
+												</td>
+												<td><select name="queryAnalyserType" ng-model="column.queryAnalyserType" ng-required="column.analysed">
+														<option value="">Select One</option>
+														<option ng-repeat="domain in requestForm.analyserList" value="{{domain.id}}">{{domain.value}}</option>
+													</select>
 												</td>
 												<td>
 													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.modifiedColumn" required="required" disabled="disabled">
+														ng-checked="requestVO.modifiedColumn" required="required" ng-disabled="column.queryDataType != 8 || !queryChanged">
 												</td>
 											</tr>	                   			
 				                   		</tbody>
@@ -137,8 +145,9 @@
 						</div>
 						<div  class="centeredButton">
 							<button class="btn button" type="button" id="section2Back" ng-click="gotoSection1('elasticInfoForm', true)">Back</button>
-							<button class="btn button" type="reset" >Clear</button>
-			                <button class="btn button" type="button" id="section2Next" ng-click="gotoSection3('elasticInfoForm')">Next</button>
+							<button class="btn button" type="button" id="section2Back" ng-show="queryChanged" ng-click="fetchColumnMapping('elasticInfoForm')">Fetch Column Mapping</button>
+			                <button class="btn button" type="button" id="section2Next" ng-click="gotoSection3('elasticInfoForm')" 
+			                	ng-disabled="!columnMapped">Next</button>
 			            </div>
 		            </fieldset>
 		     	</form>

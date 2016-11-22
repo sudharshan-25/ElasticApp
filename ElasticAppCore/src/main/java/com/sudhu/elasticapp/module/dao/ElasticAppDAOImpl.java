@@ -2,7 +2,9 @@ package com.sudhu.elasticapp.module.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 	private NamedParameterJdbcOperations jdbcOperations;
 
 	@Override
-	public List<DomainVO> getApplciationList() {
+	public List<DomainVO> getApplicationList() {
 
 		String sqlString = " SELECT app_id, app_key, app_name from t_mapplication";
 
@@ -75,6 +77,13 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 	@Override
 	public List<DomainVO> getDataTypeList() {
 		String sqlString = " SELECT data_id, data_key, data_desc from t_mdatatype ";
+		List<DomainVO> dbTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
+		return dbTypeList;
+	}
+
+	@Override
+	public List<DomainVO> getAnalyserList() {
+		String sqlString = " SELECT analyser_id,analyser_key,analyser_desc FROM t_manalyser_type ";
 		List<DomainVO> dbTypeList = jdbcOperations.query(sqlString, new DomainVORowMapper());
 		return dbTypeList;
 	}
@@ -136,7 +145,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 					return rs.next() ? rs.getInt(1) : 0;
 				}
 			});
-			requestVO.setRequestId(" " +(requestId + 1));
+			requestVO.setRequestId(" " + (requestId + 1));
 			sqlString = " INSERT INTO t_mquery "
 					+ "(query_id, query_name, query_app_id, query_type_id, query_string, query_freq_id, query_status_id, query_app_token, id_column, modified_column, admin_email,  "
 					+ " db_server, db_port, db_name, db_username, db_password, db_connection_url, db_id, added_by, added_on  )"
@@ -188,14 +197,16 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		List<ColumnMappingVO> columnMappingList = requestVO.getColumnMapping();
 		MapSqlParameterSource[] array = new MapSqlParameterSource[columnMappingList.size()];
 		int i = 0;
-		sqlString = " INSERT INTO t_mcolumn_mapping(query_id,column_name,column_data_id, column_indexed) values(:query_id,:column_name,:column_data_id, :column_indexed)";
+		sqlString = " INSERT INTO t_mcolumn_mapping(query_id,column_name,column_data_id, column_analysed, column_analyser_type) values(:query_id,:column_name,:column_data_id, :column_analysed, :column_analyser_type)";
 		for (ColumnMappingVO column : columnMappingList) {
 			column.setQueryId(requestVO.getRequestId());
 			MapSqlParameterSource mapSql = new MapSqlParameterSource();
 			mapSql.addValue("query_id", column.getQueryId());
 			mapSql.addValue("column_name", column.getColumnName());
 			mapSql.addValue("column_data_id", column.getQueryDataType());
-			mapSql.addValue("column_indexed", column.getIndexed());
+			mapSql.addValue("column_analysed", column.getAnalysed());
+			mapSql.addValue("column_analyser_type",
+					column.getQueryAnalyserType().trim().equals("") ? null : column.getQueryAnalyserType());
 			array[i++] = mapSql;
 		}
 		jdbcOperations.batchUpdate(sqlString, array);
@@ -261,7 +272,8 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 
 		String sqlString = "SELECT query_id, query_name, query_app_id, query_type_id, query_string, "
 				+ " query_freq_id, query_status_id, db_server, db_port, db_name, db_password, db_username,"
-				+ " db_id, query_app_token, id_column, modified_column, admin_email " + " FROM t_mquery WHERE query_id = :query_id";
+				+ " db_id, query_app_token, id_column, modified_column, admin_email "
+				+ " FROM t_mquery WHERE query_id = :query_id";
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("query_id", requestId);
 
@@ -300,7 +312,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 			}
 		});
 
-		sqlString = " SELECT query_id,column_name,column_data_id, column_indexed from t_mcolumn_mapping where query_id = :query_id ";
+		sqlString = " SELECT query_id,column_name,column_data_id, column_analysed, column_analyser_type from t_mcolumn_mapping where query_id = :query_id ";
 		map = new MapSqlParameterSource();
 		map.addValue("query_id", requestId);
 		List<ColumnMappingVO> columnMappingList = jdbcOperations.query(sqlString, map,
@@ -312,7 +324,8 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 						mappingVO.setQueryId(rs.getString(1));
 						mappingVO.setColumnName(rs.getString(2));
 						mappingVO.setQueryDataType(rs.getString(3));
-						mappingVO.setIndexed(rs.getBoolean(4));
+						mappingVO.setAnalysed(rs.getBoolean(4));
+						mappingVO.setQueryAnalyserType(rs.getString(5));
 						return mappingVO;
 					}
 
@@ -320,6 +333,77 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		requestVO.setColumnMapping(columnMappingList);
 
 		return requestVO;
+	}
+
+	@Override
+	public List<RequestVO> getRequestsForFrequency(String frequencyId) {
+
+		String sqlString = "SELECT query_id, query_name, query_app_id, query_type_id, query_string, "
+				+ " query_freq_id, query_status_id, db_server, db_port, db_name, db_password, db_username,"
+				+ " db_id, query_app_token, id_column, modified_column, admin_email "
+				+ " FROM t_mquery WHERE query_freq_id = :query_freq_id and query_status_id = :query_status_id";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("query_freq_id", frequencyId);
+		map.addValue("query_status_id", 1);
+
+		List<RequestVO> requestList = jdbcOperations.query(sqlString, map, new RowMapper<RequestVO>() {
+
+			@Override
+			public RequestVO mapRow(ResultSet rs, int row) throws SQLException, DataAccessException {
+				RequestVO requestVO = null;
+				requestVO = new RequestVO();
+				requestVO.setRequestId(rs.getString(1));
+				requestVO.setQueryName(rs.getString(2));
+				requestVO.setProjectId(rs.getString(3));
+				requestVO.setQueryType(rs.getString(4));
+				requestVO.setQuery(rs.getString(5));
+				requestVO.setUpdateFreq(rs.getString(6));
+				requestVO.setStatusId(rs.getString(7));
+				ModuleVO moduleVO = new ModuleVO();
+				moduleVO.setDbServerName(rs.getString(8));
+				moduleVO.setDbPortNumber(rs.getInt(9));
+				moduleVO.setDataBaseName(rs.getString(10));
+				try {
+					moduleVO.setDbPassword(new String(rs.getBytes(11), "UTF-8"));
+				} catch (Exception e) {
+					moduleVO.setDbPassword(null);
+				}
+				moduleVO.setDbUserName(rs.getString(12));
+				moduleVO.setDatabaseVendorId(rs.getString(13));
+				requestVO.setAppToken(rs.getString(14));
+				requestVO.setIdColumn(rs.getString(15));
+				requestVO.setModifiedColumn(rs.getString(16));
+				requestVO.setEmailNotification(rs.getString(17));
+				requestVO.setModuleVO(moduleVO);
+
+				return requestVO;
+			}
+		});
+
+		sqlString = " SELECT query_id,column_name,column_data_id, column_analysed, column_analyser_type from t_mcolumn_mapping where query_id = :query_id ";
+		for (RequestVO requestVO : requestList) {
+			map = new MapSqlParameterSource();
+			map.addValue("query_id", requestVO.getRequestId());
+			List<ColumnMappingVO> columnMappingList = jdbcOperations.query(sqlString, map,
+					new RowMapper<ColumnMappingVO>() {
+
+						@Override
+						public ColumnMappingVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+							ColumnMappingVO mappingVO = new ColumnMappingVO();
+							mappingVO.setQueryId(rs.getString(1));
+							mappingVO.setColumnName(rs.getString(2));
+							mappingVO.setQueryDataType(rs.getString(3));
+							mappingVO.setAnalysed(rs.getBoolean(4));
+							mappingVO.setQueryAnalyserType(rs.getString(5));
+							return mappingVO;
+						}
+
+					});
+			requestVO.setColumnMapping(columnMappingList);
+
+		}
+
+		return requestList;
 	}
 
 	private static class DomainVORowMapper implements RowMapper<DomainVO> {
@@ -332,4 +416,32 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 			return domainVO;
 		}
 	}
+
+	@Override
+	public Timestamp getLastUpdatedDate(String queryId) {
+		String sql = "SELECT last_updated_time from t_dquery_update where query_id = :query_id ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("query_id", queryId);
+		Timestamp timestamp = jdbcOperations.query(sql, map, new ResultSetExtractor<Timestamp>() {
+
+			@Override
+			public Timestamp extractData(ResultSet rs) throws SQLException, DataAccessException {
+				long date = new Date().getTime();
+				return rs.next() ? rs.getTimestamp(1) : new Timestamp(date);
+			}
+		});
+		return timestamp;
+
+	}
+
+	@Override
+	public void updatedLastDate(String queryId) {
+		String sql = "UPDATE t_dquery_update set last_updated_time = :last_updated_time where query_id = :query_id ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("query_id", queryId);
+		map.addValue("last_updated_time", new Date());
+		jdbcOperations.update(sql, map);
+
+	}
+	
 }

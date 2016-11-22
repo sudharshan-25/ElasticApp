@@ -19,6 +19,7 @@ elasticApp.controller('summaryController', [ '$scope', '$http',
 			$scope.requestForm['updateFreqList'] = d.updateFreqList;
 			$scope.requestForm['dataTypeList'] = d.dataTypeList;
 			$scope.requestForm['statusList'] = d.statusList;
+			$scope.requestForm['analyserList'] = d.analyserList
 			//$scope.$apply();
 		}, function(errResponse) {
 			alert('Error while fetching Users');

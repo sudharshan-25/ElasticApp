@@ -1,5 +1,6 @@
 package com.sudhu.elasticapp.module.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import com.sudhu.elasticapp.module.domain.UserVO;
  * Created by sudha on 05-Oct-16.
  */
 public interface ElasticAppDAO {
-	List<DomainVO> getApplciationList();
+	List<DomainVO> getApplicationList();
 
 	List<DomainVO> getQueryTypes();
 
@@ -33,4 +34,12 @@ public interface ElasticAppDAO {
 	List<RequestHeaderVO> searchResults(Map<String, String> searchCriteria);
 
 	RequestVO getRequest(int requestId);
+
+	List<DomainVO> getAnalyserList();
+
+	List<RequestVO> getRequestsForFrequency(String frequencyId);
+
+	Timestamp getLastUpdatedDate(String queryId);
+
+	void updatedLastDate(String queryId);
 }

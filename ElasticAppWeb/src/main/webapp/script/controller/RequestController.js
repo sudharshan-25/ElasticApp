@@ -35,6 +35,7 @@ elasticApp.controller('newRequestController', [ '$scope', '$http',
 				$scope.requestForm['queryTypes'] = d.queryTypes;
 				$scope.requestForm['updateFreqList'] = d.updateFreqList;
 				$scope.requestForm['dataTypeList'] = d.dataTypeList;
+				$scope.requestForm['analyserList'] = d.analyserList;
 				//$scope.$apply();
 			}, function(errResponse) {
 				alert('Error while fetching Users');
@@ -95,6 +96,7 @@ elasticApp.controller('newRequestController', [ '$scope', '$http',
 						});
 						
 						$scope.columnMapped = true;
+						$scope.requestVO.reIndexData = true;
 					}else if(d.error){
 						alert(d.error);
 					}

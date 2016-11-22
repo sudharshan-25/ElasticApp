@@ -15,23 +15,11 @@ public class ColumnMappingVO {
 
 	private String queryDataType;
 
-	private boolean indexed;
+	private String queryAnalyserType = "";
 
-	/**
-	 * @return the indexed
-	 */
-	public boolean getIndexed() {
-		return indexed;
-	}
-
-	/**
-	 * @param indexed
-	 *            the indexed to set
-	 */
-	public void setIndexed(boolean indexed) {
-		this.indexed = indexed;
-	}
-
+	private boolean analysed;
+	
+	
 	/**
 	 * @return the queryId
 	 */
@@ -75,6 +63,35 @@ public class ColumnMappingVO {
 	 */
 	public void setQueryDataType(String queryDataType) {
 		this.queryDataType = queryDataType;
+	}
+
+	/**
+	 * @return the queryAnalyserType
+	 */
+	public String getQueryAnalyserType() {
+		return queryAnalyserType;
+	}
+
+	/**
+	 * @param queryAnalyserType
+	 *            the queryAnalyserType to set
+	 */
+	public void setQueryAnalyserType(String queryAnalyserType) {
+		this.queryAnalyserType = queryAnalyserType;
+	}
+
+	/**
+	 * @return the analysed
+	 */
+	public boolean getAnalysed() {
+		return analysed;
+	}
+
+	/**
+	 * @param analysed the analysed to set
+	 */
+	public void setAnalysed(boolean analysed) {
+		this.analysed = analysed;
 	}
 
 }

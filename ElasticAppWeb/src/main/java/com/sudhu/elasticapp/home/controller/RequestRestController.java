@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sudhu.elasticapp.common.helper.GeneralUtils;
+import com.sudhu.elasticapp.elastic.helper.ElasticHelper;
 import com.sudhu.elasticapp.generic.dao.domain.DBConnectionVO;
 import com.sudhu.elasticapp.generic.dao.helper.DBConnectionHelper;
 import com.sudhu.elasticapp.home.form.AbstractResponseVO;
@@ -37,15 +38,19 @@ public class RequestRestController {
 	@Autowired
 	private ElasticAppService requestService;
 
+	@Autowired
+	private ElasticHelper elasticHelper;
+	
 	@RequestMapping(value = "/fetchForm")
 	public ResponseEntity<RequestForm> fetchRequestForm() {
 		RequestForm requestForm = new RequestForm();
-		requestForm.setAvailableProjects(domainService.getApplciationList());
+		requestForm.setAvailableProjects(domainService.getApplicationList());
 		requestForm.setDbTypes(domainService.getDBTypeList());
 		requestForm.setQueryTypes(domainService.getQueryTypes());
 		requestForm.setUpdateFreqList(domainService.getFrequencyList());
 		requestForm.setDataTypeList(domainService.getDataTypeList());
 		requestForm.setStatusList(domainService.getStatusList());
+		requestForm.setAnalyserList(domainService.getAnalyserList());
 		return new ResponseEntity<RequestForm>(requestForm, HttpStatus.OK);
 	}
 
@@ -109,6 +114,10 @@ public class RequestRestController {
 		AbstractResponseVO responseVO = new AbstractResponseVO();
 		try {
 			requestService.saveQueryRequest(requestVO);
+			if(requestVO.isReIndexData()){
+				elasticHelper.deleteType(requestVO.getQueryName(), requestVO.getQueryName());
+				elasticHelper.createType(requestVO.getQueryName(), requestVO.getQueryName(), requestVO.getColumnMapping());
+			}
 			responseVO.setMessage("Request Saved successfully");
 			responseVO.setData(requestVO);
 		} catch (Exception e) {

@@ -18,6 +18,8 @@ public class RequestForm {
 	
 	private List<DomainVO> statusList;
 
+	private List<DomainVO> analyserList;
+	
 	public List<DomainVO> getDataTypeList() {
 		return dataTypeList;
 	}
@@ -64,6 +66,20 @@ public class RequestForm {
 
 	public void setStatusList(List<DomainVO> statusList) {
 		this.statusList = statusList;
+	}
+
+	/**
+	 * @return the analyserList
+	 */
+	public List<DomainVO> getAnalyserList() {
+		return analyserList;
+	}
+
+	/**
+	 * @param analyserList the analyserList to set
+	 */
+	public void setAnalyserList(List<DomainVO> analyserList) {
+		this.analyserList = analyserList;
 	}
 
 }

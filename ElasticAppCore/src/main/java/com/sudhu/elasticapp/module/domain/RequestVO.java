@@ -20,7 +20,7 @@ public class RequestVO {
 	private String queryType="";
 
 	private String query;
-
+	
 	private String updateFreq="";
 
 	private String statusId="";
@@ -31,6 +31,22 @@ public class RequestVO {
 	
 	private String emailNotification;
 	
+	private boolean reIndexData;
+	
+	/**
+	 * @return the reIndexData
+	 */
+	public boolean isReIndexData() {
+		return reIndexData;
+	}
+
+	/**
+	 * @param reIndexData the reIndexData to set
+	 */
+	public void setReIndexData(boolean reIndexData) {
+		this.reIndexData = reIndexData;
+	}
+
 	/**
 	 * @return the columnMapping
 	 */

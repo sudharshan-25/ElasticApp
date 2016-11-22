@@ -7,7 +7,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +31,8 @@ public class DBConnectionHelper {
 	private static DBConnectionHelper instance;
 
 	public final Logger LOGGER = LogManager.getLogger(DBConnectionHelper.class);
+
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
 	private DBConnectionHelper() {
 
@@ -91,9 +99,9 @@ public class DBConnectionHelper {
 			}
 
 			if (query.contains("LIMIT")) {
-				query.replaceAll("LIMIT\\s*\\d+", "LIMIT 1");
+				query = query.replaceAll("LIMIT\\s*\\d+", " LIMIT 1");
 			} else {
-				query.concat("LIMIT 1");
+				query = query.concat(" LIMIT 1");
 			}
 
 			statement = connection.createStatement();
@@ -102,7 +110,7 @@ public class DBConnectionHelper {
 				ResultSetMetaData rsmd = rs.getMetaData();
 				int columnCount = rsmd.getColumnCount();
 				for (int i = 0; i < columnCount; i++) {
-					columnDataType.put(rsmd.getColumnLabel(i+1), rsmd.getColumnType(i+1));
+					columnDataType.put(rsmd.getColumnLabel(i + 1), rsmd.getColumnType(i + 1));
 				}
 
 			}
@@ -169,4 +177,78 @@ public class DBConnectionHelper {
 
 		return connectionVO;
 	}
+
+	public List<Map<String, Object>> getDataFromTable(DBConnectionVO connectionVO, String query,
+			String lastUpdatedColumn, Timestamp lastUpdatedTime) throws DBConnectionException {
+
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet rs = null;
+		List<Map<String, Object>> tableData = new ArrayList<>();
+		Map<String, Object> rowData = null;
+		try {
+			Driver driver = connectionVO.getDbType().newInstance();
+			DriverManager.registerDriver(driver);
+			String connectionString = connectionVO.getConnectionString();
+			String userName = connectionVO.getUserName();
+			String passWord = connectionVO.getPassword();
+
+			if (null == userName) {
+				connection = DriverManager.getConnection(connectionString);
+			} else {
+				connection = DriverManager.getConnection(connectionString, userName, passWord);
+			}
+
+			statement = connection.createStatement();
+
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				rowData = new HashMap<>();
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int columnCount = rsmd.getColumnCount();
+				for (int i = 0; i < columnCount; i++) {
+
+					int columnType = rsmd.getColumnType(i + 1);
+
+					if (columnType == Types.DATE || columnType == Types.TIMESTAMP) {
+						rowData.put(rsmd.getColumnLabel(i + 1), dateFormat.format(rs.getTimestamp(i + 1)));
+					} else {
+						rowData.put(rsmd.getColumnLabel(i + 1), rs.getObject(i + 1));
+					}
+				}
+				tableData.add(rowData);
+			}
+
+		} catch (Exception ex) {
+			throw new DBConnectionException(ex);
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException exception) {
+
+				}
+			}
+
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exception) {
+
+				}
+			}
+
+			if (null != connection) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+
+				}
+			}
+		}
+
+		return tableData;
+
+	}
+
 }

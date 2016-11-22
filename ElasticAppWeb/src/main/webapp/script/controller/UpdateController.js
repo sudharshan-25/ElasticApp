@@ -19,7 +19,7 @@ elasticApp.controller('updateRequestController', [ '$scope', '$http', '$routePar
 			
 			$scope.requestForm = {};
 			$scope.requestVO = {};
-			
+			$scope.columnMapped = true;
 			RequestService.fetchRequestForm().then(function(d) {
 				$scope.requestForm['dbTypes'] = d.dbTypes;
 				$scope.requestForm['availableProjects'] = d.availableProjects;
@@ -27,6 +27,7 @@ elasticApp.controller('updateRequestController', [ '$scope', '$http', '$routePar
 				$scope.requestForm['updateFreqList'] = d.updateFreqList;
 				$scope.requestForm['dataTypeList'] = d.dataTypeList;
 				$scope.requestForm['statusList'] = d.statusList;
+				$scope.requestForm['analyserList'] = d.analyserList
 				//$scope.$apply();
 			}, function(errResponse) {
 				alert('Error while fetching Form');
@@ -95,9 +96,11 @@ elasticApp.controller('updateRequestController', [ '$scope', '$http', '$routePar
 						
 						$.each($scope.requestVO.columnMapping, function(index, column){
 							column.queryDataType = '' + column.queryDataType;
+							column.analysed = false;
 						});
 						
 						$scope.columnMapped = true;
+						$scope.requestVO.reIndexData = true;
 					}else if(d.error){
 						alert(d.error);
 					}
@@ -154,8 +157,8 @@ elasticApp.controller('updateRequestController', [ '$scope', '$http', '$routePar
 				$('#QueryTypeDiv').removeClass('hide');
 				$('#newRequestLabelDiv').addClass('hide');
 				$('#QueryTypeDiv').addClass('hide');
-				$scope.queryChecked = false;
-				$scope.columnMapped = false;
+				$scope.queryChanged = false;
+				
 				
 			} else {
 				document.forms[form].reportValidity();

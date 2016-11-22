@@ -94,11 +94,12 @@
 				                   <table  ng-show="requestVO.columnMapping.length > 0">
 				                   		<thead>
 				                   			<tr>
-				                   				<td>Id Column</td>
-				                   				<td>Column Name</td>
-				                   				<td>Elastic DataType</td>
-				                   				<td>Indexed</td>
-				                   				<td>Modified Date Column </td>
+				                   				<td width="5%">Id Column</td>
+				                   				<td width="20%">Column Name</td>
+				                   				<td width="25%">Elastic DataType</td>
+				                   				<td width="10%">Analyzed</td>
+				                   				<td width="10%">Analyzer Type</td>
+				                   				<td width="5%">Modified Date Column </td>
 				                   			</tr>
 				                   		</thead>
 				                   		<tbody>	                   
@@ -111,7 +112,12 @@
 													</select>
 												</td>
 												<td>
-													<input type="checkbox" ng-checked="column.indexed" ng-model="column.indexed" disabled="disabled"/>
+													<input type="checkbox" ng-checked="column.analysed" ng-model="column.analysed" disabled="disabled"/>
+												</td>
+												<td><select name="queryAnalyserType" required="required" ng-model="column.queryAnalyserType" disabled="disabled">
+														<option value="">Select One</option>
+														<option ng-repeat="domain in requestForm.analyserList" value="{{domain.id}}">{{domain.value}}</option>
+													</select>
 												</td>
 												<td>
 													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 

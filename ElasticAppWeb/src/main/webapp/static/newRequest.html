@@ -78,7 +78,7 @@
 		                <p>
 		                    <span class="headerLabel">Query Name : </span>
 		                    <span class="headerValue">
-		                        <input id="queryName" class="mandatory" required="required" ng-model="requestVO.queryName" ng-change="queryChecked = false"/>
+		                        <input id="queryName" class="mandatory" required="required" pattern="[a-z]+" ng-model="requestVO.queryName" ng-change="queryChecked = false"/>
 		                    </span>
 		                    <span class="headerValue">
 		                    	<label>Used as Type Name in Elastic Searh Engine</label>
@@ -100,7 +100,8 @@
 				                   				<td width="5%">Id Column</td>
 				                   				<td width="20%">Column Name</td>
 				                   				<td width="25%">Elastic DataType</td>
-				                   				<td width="10%">Indexed</td>
+				                   				<td width="10%">Analyzed</td>
+				                   				<td width="10%">Analyzer Type</td>
 				                   				<td width="5%">Modified Date Column </td>
 				                   			</tr>
 				                   		</thead>
@@ -115,11 +116,16 @@
 													</select>
 												</td>
 												<td>
-													<input type="checkbox" ng-checked="column.indexed" ng-model="column.indexed" />
+													<input type="checkbox" ng-checked="column.analysed" ng-model="column.analysed" />
+												</td>
+												<td><select name="queryAnalyserType" ng-required="column.analysed" ng-model="column.queryAnalyserType" ng-show="column.analysed">
+														<option value="">Select One</option>
+														<option ng-repeat="domain in requestForm.analyserList" value="{{domain.id}}">{{domain.value}}</option>
+													</select>
 												</td>
 												<td>
 													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.modifiedColumn" required="required" ng-disabled="column.queryDataType != 2">
+														ng-checked="requestVO.modifiedColumn" required="required" ng-disabled="column.queryDataType != 8">
 												</td>
 											</tr>	                   			
 				                   		</tbody>
