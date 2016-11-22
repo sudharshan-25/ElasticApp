@@ -10,6 +10,10 @@ public class SearchField {
 
 	private String to;
 
+	private String operator;
+
+	private boolean wildcard;
+
 	public SearchField() {
 
 	}
@@ -77,6 +81,36 @@ public class SearchField {
 	 */
 	public void setTo(String to) {
 		this.to = to;
+	}
+
+	/**
+	 * @return the operator
+	 */
+	public String getOperator() {
+		return operator;
+	}
+
+	/**
+	 * @param operator
+	 *            the operator to set
+	 */
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+
+	/**
+	 * @return the wildcard
+	 */
+	public boolean getWildcard() {
+		return wildcard;
+	}
+
+	/**
+	 * @param wildcard
+	 *            the wildcard to set
+	 */
+	public void setWildcard(boolean wildcard) {
+		this.wildcard = wildcard;
 	}
 
 }

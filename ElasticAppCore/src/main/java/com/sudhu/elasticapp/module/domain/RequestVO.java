@@ -26,9 +26,7 @@ public class RequestVO {
 	private String statusId="";
 
 	private String idColumn = "";
-	
-	private String modifiedColumn = "";
-	
+		
 	private String emailNotification;
 	
 	private boolean reIndexData;
@@ -212,20 +210,6 @@ public class RequestVO {
 	 */
 	public void setIdColumn(String idColumn) {
 		this.idColumn = idColumn;
-	}
-
-	/**
-	 * @return the modifiedColumn
-	 */
-	public String getModifiedColumn() {
-		return modifiedColumn;
-	}
-
-	/**
-	 * @param modifiedColumn the modifiedColumn to set
-	 */
-	public void setModifiedColumn(String modifiedColumn) {
-		this.modifiedColumn = modifiedColumn;
 	}
 
 	/**

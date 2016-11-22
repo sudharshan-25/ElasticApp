@@ -122,11 +122,7 @@
 														<option value="">Select One</option>
 														<option ng-repeat="domain in requestForm.analyserList" value="{{domain.id}}">{{domain.value}}</option>
 													</select>
-												</td>
-												<td>
-													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.modifiedColumn" required="required" ng-disabled="column.queryDataType != 8">
-												</td>
+												</td>												
 											</tr>	                   			
 				                   		</tbody>
 				                   </table>

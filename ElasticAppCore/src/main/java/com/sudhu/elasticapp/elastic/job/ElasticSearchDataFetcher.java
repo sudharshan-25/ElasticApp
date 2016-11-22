@@ -1,6 +1,5 @@
 package com.sudhu.elasticapp.elastic.job;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +31,8 @@ public class ElasticSearchDataFetcher extends Thread {
 		try {
 			DBConnectionHelper dbConnectionHelper = DBConnectionHelper.getInstance();
 			DBConnectionVO dbConnectionVO = dbConnectionHelper.getConnectionVO(requestVO.getModuleVO());
-			Timestamp timestamp = elasticAppDAO.getLastUpdatedDate(requestVO.getRequestId());
 			List<Map<String, Object>> tableData = dbConnectionHelper.getDataFromTable(dbConnectionVO,
-					requestVO.getQuery(), requestVO.getModifiedColumn(), timestamp);
+					requestVO.getQuery());
 			elasticHelper.insertBulkData(tableData, requestVO.getQueryName(), requestVO.getQueryName(),
 					requestVO.getIdColumn());
 			elasticAppDAO.updatedLastDate(requestVO.getRequestId());

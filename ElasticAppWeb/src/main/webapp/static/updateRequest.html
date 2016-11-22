@@ -129,14 +129,10 @@
 												<td>
 													<input type="checkbox" ng-checked="column.analysed" ng-model="column.analysed" ng-disabled="!columnMapped || !queryChanged"/>
 												</td>
-												<td><select name="queryAnalyserType" ng-model="column.queryAnalyserType" ng-required="column.analysed">
+												<td><select name="queryAnalyserType" ng-model="column.queryAnalyserType" ng-required="column.analysed" ng-disabled="(!columnMapped || !queryChanged) || !column.analysed">
 														<option value="">Select One</option>
 														<option ng-repeat="domain in requestForm.analyserList" value="{{domain.id}}">{{domain.value}}</option>
 													</select>
-												</td>
-												<td>
-													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.modifiedColumn" required="required" ng-disabled="column.queryDataType != 8 || !queryChanged">
 												</td>
 											</tr>	                   			
 				                   		</tbody>

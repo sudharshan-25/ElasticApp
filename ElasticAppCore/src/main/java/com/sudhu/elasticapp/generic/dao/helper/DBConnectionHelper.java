@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,9 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 import com.sudhu.elasticapp.generic.dao.domain.DBConnectionVO;
 import com.sudhu.elasticapp.generic.dao.exception.DBConnectionException;
 import com.sudhu.elasticapp.module.domain.ModuleVO;
@@ -29,8 +26,6 @@ import com.sudhu.elasticapp.module.domain.ModuleVO;
 public class DBConnectionHelper {
 
 	private static DBConnectionHelper instance;
-
-	public final Logger LOGGER = LogManager.getLogger(DBConnectionHelper.class);
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
@@ -70,13 +65,7 @@ public class DBConnectionHelper {
 		} catch (Exception ex) {
 			throw new DBConnectionException(ex);
 		} finally {
-			if (null != connection) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-
-				}
-			}
+			this.closeConnection(null, null, connection);
 		}
 	}
 
@@ -98,10 +87,12 @@ public class DBConnectionHelper {
 				connection = DriverManager.getConnection(connectionString, userName, passWord);
 			}
 
-			if (query.contains("LIMIT")) {
-				query = query.replaceAll("LIMIT\\s*\\d+", " LIMIT 1");
+			query = query.toLowerCase();
+
+			if (query.contains("limit")) {
+				query = query.replaceAll("limit\\s*\\d+", " limit 1");
 			} else {
-				query = query.concat(" LIMIT 1");
+				query = query.replace("select", "select top 1 ");
 			}
 
 			statement = connection.createStatement();
@@ -118,29 +109,7 @@ public class DBConnectionHelper {
 		} catch (Exception ex) {
 			throw new DBConnectionException(ex);
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException exception) {
-
-				}
-			}
-
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException exception) {
-
-				}
-			}
-
-			if (null != connection) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-
-				}
-			}
+			this.closeConnection(rs, statement, connection);
 		}
 
 		return columnDataType;
@@ -156,8 +125,8 @@ public class DBConnectionHelper {
 				connectionURL = "jdbc:mysql://";
 				connectionVO.setDbType(com.mysql.cj.jdbc.Driver.class);
 			} else if ("2".equals(vendorID)) {
-				connectionURL = "jdbc:microsoft:sqlserver://";
-				connectionVO.setDbType(null);
+				connectionURL = "jdbc:sqlserver://";
+				connectionVO.setDbType(SQLServerDriver.class);
 			}
 
 			connectionURL += moduleVO.getDbServerName() + ":" + moduleVO.getDbPortNumber();
@@ -178,8 +147,8 @@ public class DBConnectionHelper {
 		return connectionVO;
 	}
 
-	public List<Map<String, Object>> getDataFromTable(DBConnectionVO connectionVO, String query,
-			String lastUpdatedColumn, Timestamp lastUpdatedTime) throws DBConnectionException {
+	public List<Map<String, Object>> getDataFromTable(DBConnectionVO connectionVO, String query)
+			throws DBConnectionException {
 
 		Connection connection = null;
 		Statement statement = null;
@@ -200,7 +169,7 @@ public class DBConnectionHelper {
 			}
 
 			statement = connection.createStatement();
-
+			query = query.toLowerCase();
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
 				rowData = new HashMap<>();
@@ -222,33 +191,37 @@ public class DBConnectionHelper {
 		} catch (Exception ex) {
 			throw new DBConnectionException(ex);
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException exception) {
-
-				}
-			}
-
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException exception) {
-
-				}
-			}
-
-			if (null != connection) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-
-				}
-			}
+			this.closeConnection(rs, statement, connection);
 		}
 
 		return tableData;
 
+	}
+
+	private void closeConnection(ResultSet rs, Statement statement, Connection connection) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException exception) {
+
+			}
+		}
+
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException exception) {
+
+			}
+		}
+
+		if (null != connection) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+
+			}
+		}
 	}
 
 }
