@@ -128,6 +128,8 @@ public class ElasticHelper {
 			if (existsResponse.isExists()) {
 				DeleteIndexRequestBuilder deleteIndexRequestBuilder = client.admin().indices().prepareDelete(indexName);
 				deleteIndexRequestBuilder.execute().actionGet();
+			} else {
+				throw new ElasticException("No Such Index Exists");
 			}
 		} catch (Exception e) {
 			throw new ElasticException(e);
@@ -138,16 +140,22 @@ public class ElasticHelper {
 			String idColumn) throws ElasticException {
 
 		try {
-			BulkRequestBuilder bulkRequestBuilder = client.prepareBulk();
+			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
+					.actionGet();
+			if (existsResponse.isExists()) {
+				BulkRequestBuilder bulkRequestBuilder = client.prepareBulk();
+				idColumn = idColumn.toLowerCase();
+				for (Map<String, Object> dataRow : dataToInsert) {
+					bulkRequestBuilder.add(client.prepareIndex(indexName, typeName).setSource(dataRow)
+							.setId(dataRow.get(idColumn).toString()));
+				}
 
-			for (Map<String, Object> dataRow : dataToInsert) {
-				bulkRequestBuilder.add(client.prepareIndex(indexName, typeName).setSource(dataRow)
-						.setId(dataRow.get(idColumn).toString()));
-			}
-
-			BulkResponse bulkResponse = bulkRequestBuilder.execute().actionGet();
-			if (bulkResponse.hasFailures()) {
-				throw new ElasticException(bulkResponse.buildFailureMessage());
+				BulkResponse bulkResponse = bulkRequestBuilder.execute().actionGet();
+				if (bulkResponse.hasFailures()) {
+					throw new ElasticException(bulkResponse.buildFailureMessage());
+				}
+			} else {
+				throw new ElasticException("No Such Index Exists");
 			}
 		} catch (Exception e) {
 			throw new ElasticException(e);
@@ -169,45 +177,129 @@ public class ElasticHelper {
 				} else {
 					searchCriteria.getFields().forEach(searchRequestBuilder::addField);
 				}
+
+				String fieldName;
+				String value;
+				String from;
+				String to;
+				String operator;
+
 				for (SearchField field : searchCriteria.getFewMatch()) {
-					if (null != field.getValue()) {
-						queryBuilder.should(QueryBuilders.wildcardQuery(field.getName(), "*" + field.getValue() + "*"));
-					} else if (null != field.getFrom() && null == field.getTo()) {
-						queryBuilder.should(QueryBuilders.rangeQuery(field.getName()).from(field.getFrom()));
-					} else if (null == field.getFrom() && null != field.getTo()) {
-						queryBuilder.should(QueryBuilders.rangeQuery(field.getName()).to(field.getTo()));
-					} else if (null != field.getFrom() && null != field.getTo()) {
-						queryBuilder.should(
-								QueryBuilders.rangeQuery(field.getName()).from(field.getFrom()).to(field.getTo()));
+					fieldName = field.getName();
+					value = field.getValue();
+					from = field.getFrom();
+					to = field.getTo();
+					operator = field.getOperator();
+					if (null != value) {
+						if (field.getWildcard()) {
+							queryBuilder.should(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
+						} else {
+							queryBuilder.should(QueryBuilders.termQuery(fieldName, value));
+						}
+					} else if (null != from && null == to) {
+						queryBuilder.should(QueryBuilders.rangeQuery(fieldName).from(from));
+					} else if (null == from && null != to) {
+						queryBuilder.should(QueryBuilders.rangeQuery(fieldName).to(to));
+					} else if (null != from && null != to) {
+						queryBuilder.should(QueryBuilders.rangeQuery(fieldName).from(from).to(to));
+					} else if (null != operator) {
+						switch (operator) {
+						case "gt":
+							queryBuilder.should(QueryBuilders.rangeQuery(fieldName).gt(value));
+							break;
+						case "ge":
+							queryBuilder.should(QueryBuilders.rangeQuery(fieldName).gte(value));
+							break;
+						case "lt":
+							queryBuilder.should(QueryBuilders.rangeQuery(fieldName).lt(value));
+							break;
+						case "le":
+							queryBuilder.should(QueryBuilders.rangeQuery(fieldName).lte(value));
+							break;
+						default:
+							break;
+						}
 					}
 
 				}
 
 				for (SearchField field : searchCriteria.getAllMatch()) {
-					if (null != field.getValue()) {
-						queryBuilder.must(QueryBuilders.wildcardQuery(field.getName(), "*" + field.getValue() + "*"));
-					} else if (null != field.getFrom() && null == field.getTo()) {
-						queryBuilder.must(QueryBuilders.rangeQuery(field.getName()).from(field.getFrom()));
-					} else if (null == field.getFrom() && null != field.getTo()) {
-						queryBuilder.must(QueryBuilders.rangeQuery(field.getName()).to(field.getTo()));
-					} else if (null != field.getFrom() && null != field.getTo()) {
-						queryBuilder.must(
-								QueryBuilders.rangeQuery(field.getName()).from(field.getFrom()).to(field.getTo()));
+
+					fieldName = field.getName();
+					value = field.getValue();
+					from = field.getFrom();
+					to = field.getTo();
+					operator = field.getOperator();
+
+					if (null != value) {
+						if (field.getWildcard()) {
+							queryBuilder.must(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
+						} else {
+							queryBuilder.must(QueryBuilders.termQuery(fieldName, value));
+						}
+					} else if (null != from && null == to) {
+						queryBuilder.must(QueryBuilders.rangeQuery(fieldName).from(from));
+					} else if (null == from && null != to) {
+						queryBuilder.must(QueryBuilders.rangeQuery(fieldName).to(to));
+					} else if (null != from && null != to) {
+						queryBuilder.must(QueryBuilders.rangeQuery(fieldName).from(from).to(to));
+					} else if (null != operator) {
+						switch (operator) {
+						case "gt":
+							queryBuilder.must(QueryBuilders.rangeQuery(fieldName).gt(value));
+							break;
+						case "ge":
+							queryBuilder.must(QueryBuilders.rangeQuery(fieldName).gte(value));
+							break;
+						case "lt":
+							queryBuilder.must(QueryBuilders.rangeQuery(fieldName).lt(value));
+							break;
+						case "le":
+							queryBuilder.must(QueryBuilders.rangeQuery(fieldName).lte(value));
+							break;
+						default:
+							break;
+						}
 					}
 
 				}
 
 				for (SearchField field : searchCriteria.getNoMatch()) {
-					if (null != field.getValue()) {
-						queryBuilder
-								.mustNot(QueryBuilders.wildcardQuery(field.getName(), "*" + field.getValue() + "*"));
-					} else if (null != field.getFrom() && null == field.getTo()) {
-						queryBuilder.mustNot(QueryBuilders.rangeQuery(field.getName()).from(field.getFrom()));
-					} else if (null == field.getFrom() && null != field.getTo()) {
-						queryBuilder.mustNot(QueryBuilders.rangeQuery(field.getName()).to(field.getTo()));
-					} else if (null != field.getFrom() && null != field.getTo()) {
-						queryBuilder.mustNot(
-								QueryBuilders.rangeQuery(field.getName()).from(field.getFrom()).to(field.getTo()));
+					fieldName = field.getName();
+					value = field.getValue();
+					from = field.getFrom();
+					to = field.getTo();
+					operator = field.getOperator();
+
+					if (null != value && operator == null) {
+						if (field.getWildcard()) {
+							queryBuilder.mustNot(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
+						} else {
+							queryBuilder.mustNot(QueryBuilders.termQuery(fieldName, value));
+						}
+					} else if (null != from && null == to) {
+						queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).from(from));
+					} else if (null == from && null != to) {
+						queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).to(to));
+					} else if (null != from && null != to) {
+						queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).from(from).to(to));
+					} else if (null != operator) {
+						switch (operator) {
+						case "gt":
+							queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).gt(value));
+							break;
+						case "ge":
+							queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).gte(value));
+							break;
+						case "lt":
+							queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).lt(value));
+							break;
+						case "le":
+							queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).lte(value));
+							break;
+						default:
+							break;
+						}
 					}
 
 				}
@@ -223,6 +315,8 @@ public class ElasticHelper {
 					data.add(results);
 				}
 
+			} else {
+				throw new ElasticException("No Such Index Exists");
 			}
 		} catch (Exception e) {
 			throw new ElasticException(e);

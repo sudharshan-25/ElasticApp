@@ -147,10 +147,10 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 			});
 			requestVO.setRequestId(" " + (requestId + 1));
 			sqlString = " INSERT INTO t_mquery "
-					+ "(query_id, query_name, query_app_id, query_type_id, query_string, query_freq_id, query_status_id, query_app_token, id_column, modified_column, admin_email,  "
+					+ "(query_id, query_name, query_app_id, query_type_id, query_string, query_freq_id, query_status_id, query_app_token, id_column, admin_email,  "
 					+ " db_server, db_port, db_name, db_username, db_password, db_connection_url, db_id, added_by, added_on  )"
 					+ " values (:query_id, :query_name, :query_app_id, :query_type_id, :query_string, :query_freq_id, "
-					+ " :query_status_id, :query_app_token, :id_column, :modified_column, :admin_email, :db_server, :db_port, :db_name, :db_username, :db_password, "
+					+ " :query_status_id, :query_app_token, :id_column, :admin_email, :db_server, :db_port, :db_name, :db_username, :db_password, "
 					+ " :db_connection_url, :db_id, :added_by, :added_on  )";
 			map.addValue("added_on", Calendar.getInstance().getTime());
 			map.addValue("added_by", "1");
@@ -161,7 +161,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		} else {
 			sqlString = " UPDATE t_mquery set " + " query_app_id = :query_app_id,"
 					+ " query_type_id = :query_type_id, query_string = :query_string, query_freq_id = :query_freq_id,"
-					+ " id_column = :id_column, modified_column = :modified_column, admin_email = :admin_email, "
+					+ " id_column = :id_column, admin_email = :admin_email, "
 					+ " query_status_id = :query_status_id, db_server = :db_server, db_port = :db_port, db_name = :db_name,"
 					+ " db_username = :db_username, db_password= :db_password, db_connection_url = :db_connection_url,"
 					+ " db_id = :db_id, modified_by = :modified_by, modified_on = :modified_on where query_id = :query_id ";
@@ -176,8 +176,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		map.addValue("query_string", requestVO.getQuery());
 		map.addValue("query_freq_id", requestVO.getUpdateFreq());
 		map.addValue("query_status_id", requestVO.getStatusId());
-		map.addValue("id_column", requestVO.getIdColumn());
-		map.addValue("modified_column", requestVO.getModifiedColumn());
+		map.addValue("id_column", requestVO.getIdColumn());		
 		map.addValue("admin_email", requestVO.getEmailNotification());
 		map.addValue("db_server", requestVO.getModuleVO().getDbServerName());
 		map.addValue("db_port", requestVO.getModuleVO().getDbPortNumber());
@@ -272,7 +271,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 
 		String sqlString = "SELECT query_id, query_name, query_app_id, query_type_id, query_string, "
 				+ " query_freq_id, query_status_id, db_server, db_port, db_name, db_password, db_username,"
-				+ " db_id, query_app_token, id_column, modified_column, admin_email "
+				+ " db_id, query_app_token, id_column, admin_email "
 				+ " FROM t_mquery WHERE query_id = :query_id";
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("query_id", requestId);
@@ -303,9 +302,8 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 					moduleVO.setDbUserName(rs.getString(12));
 					moduleVO.setDatabaseVendorId(rs.getString(13));
 					requestVO.setAppToken(rs.getString(14));
-					requestVO.setIdColumn(rs.getString(15));
-					requestVO.setModifiedColumn(rs.getString(16));
-					requestVO.setEmailNotification(rs.getString(17));
+					requestVO.setIdColumn(rs.getString(15));					
+					requestVO.setEmailNotification(rs.getString(16));
 					requestVO.setModuleVO(moduleVO);
 				}
 				return requestVO;
@@ -340,7 +338,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 
 		String sqlString = "SELECT query_id, query_name, query_app_id, query_type_id, query_string, "
 				+ " query_freq_id, query_status_id, db_server, db_port, db_name, db_password, db_username,"
-				+ " db_id, query_app_token, id_column, modified_column, admin_email "
+				+ " db_id, query_app_token, id_column, admin_email "
 				+ " FROM t_mquery WHERE query_freq_id = :query_freq_id and query_status_id = :query_status_id";
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("query_freq_id", frequencyId);
@@ -372,8 +370,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 				moduleVO.setDatabaseVendorId(rs.getString(13));
 				requestVO.setAppToken(rs.getString(14));
 				requestVO.setIdColumn(rs.getString(15));
-				requestVO.setModifiedColumn(rs.getString(16));
-				requestVO.setEmailNotification(rs.getString(17));
+				requestVO.setEmailNotification(rs.getString(16));
 				requestVO.setModuleVO(moduleVO);
 
 				return requestVO;
