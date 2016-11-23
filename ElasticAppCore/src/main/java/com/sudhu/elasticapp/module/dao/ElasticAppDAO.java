@@ -41,5 +41,11 @@ public interface ElasticAppDAO {
 
 	Timestamp getLastUpdatedDate(String queryId);
 
-	void updatedLastDate(String queryId);
+	void updatedLastDate(String queryId, int currentIndex);
+
+	int getCurrentSequenceId(String queryId);
+
+	void insertLastDate(String queryId, int currentIndex);
+
+	String getCurrentIndexForToken(String appToken);
 }

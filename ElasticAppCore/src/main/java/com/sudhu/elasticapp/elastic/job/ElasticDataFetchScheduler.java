@@ -41,15 +41,40 @@ public class ElasticDataFetchScheduler {
 			ElasticSearchRequestFetcher fetcher = null;
 			switch (domainVO.getId()) {
 			case "1":
-				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 5, TimeUnit.MINUTES, elasticAppDAO, elasticHelper);
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 5, TimeUnit.MINUTES, elasticAppDAO,
+						elasticHelper);
+				executor.execute(fetcher);
+				break;
+			case "2":
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 2, TimeUnit.HOURS, elasticAppDAO,
+						elasticHelper);
+				executor.execute(fetcher);
+				break;
+			case "3":
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 4, TimeUnit.HOURS, elasticAppDAO,
+						elasticHelper);
+				executor.execute(fetcher);
+				break;
+			case "4":
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 6, TimeUnit.HOURS, elasticAppDAO,
+						elasticHelper);
+				executor.execute(fetcher);
+				break;
+			case "5":
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 12, TimeUnit.HOURS, elasticAppDAO,
+						elasticHelper);
+				executor.execute(fetcher);
+				break;
+			case "6":
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 1, TimeUnit.DAYS, elasticAppDAO,
+						elasticHelper);
 				executor.execute(fetcher);
 				break;
 
 			default:
 				break;
 			}
-			
-			
+
 		}
 
 	}

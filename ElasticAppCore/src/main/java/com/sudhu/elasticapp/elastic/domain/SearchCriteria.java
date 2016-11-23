@@ -3,7 +3,12 @@ package com.sudhu.elasticapp.elastic.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SearchCriteria {
+
+	@JsonProperty(required = true)
+	private String appToken;
 
 	private long size = 10;
 
@@ -16,6 +21,21 @@ public class SearchCriteria {
 	private List<SearchField> fewMatch = new ArrayList<>();
 
 	private List<String> fields = new ArrayList<>();
+
+	/**
+	 * @return the appToken
+	 */
+	public String getAppToken() {
+		return appToken;
+	}
+
+	/**
+	 * @param appToken
+	 *            the appToken to set
+	 */
+	public void setAppToken(String appToken) {
+		this.appToken = appToken;
+	}
 
 	/**
 	 * @return the size

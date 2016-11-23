@@ -31,11 +31,24 @@ public class ElasticSearchDataFetcher extends Thread {
 		try {
 			DBConnectionHelper dbConnectionHelper = DBConnectionHelper.getInstance();
 			DBConnectionVO dbConnectionVO = dbConnectionHelper.getConnectionVO(requestVO.getModuleVO());
+			int currentSeqId = elasticAppDAO.getCurrentSequenceId(requestVO.getRequestId());
+			String aliasName = requestVO.getQueryName();
+			String currentIndex = aliasName + "_" + currentSeqId;
+			currentSeqId++;
+			String futureIndex = aliasName + "_" + currentSeqId;
 			List<Map<String, Object>> tableData = dbConnectionHelper.getDataFromTable(dbConnectionVO,
 					requestVO.getQuery());
-			elasticHelper.insertBulkData(tableData, requestVO.getQueryName(), requestVO.getQueryName(),
-					requestVO.getIdColumn());
-			elasticAppDAO.updatedLastDate(requestVO.getRequestId());
+			elasticHelper.createType(futureIndex, futureIndex, requestVO.getColumnMapping());
+			if (currentSeqId == 1) {
+				elasticHelper.createAlias(futureIndex, aliasName);
+				elasticAppDAO.insertLastDate(requestVO.getRequestId(), currentSeqId);
+			}
+			elasticHelper.insertBulkData(tableData, futureIndex, futureIndex, requestVO.getIdColumn());
+			if (currentSeqId != 1) {
+				elasticHelper.modifyAlias(currentIndex, futureIndex, aliasName);
+				elasticHelper.deleteType(currentIndex);
+			}
+			elasticAppDAO.updatedLastDate(requestVO.getRequestId(), currentSeqId);
 
 		} catch (DBConnectionException | ElasticException e) {
 

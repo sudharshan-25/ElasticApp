@@ -176,7 +176,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 		map.addValue("query_string", requestVO.getQuery());
 		map.addValue("query_freq_id", requestVO.getUpdateFreq());
 		map.addValue("query_status_id", requestVO.getStatusId());
-		map.addValue("id_column", requestVO.getIdColumn());		
+		map.addValue("id_column", requestVO.getIdColumn());
 		map.addValue("admin_email", requestVO.getEmailNotification());
 		map.addValue("db_server", requestVO.getModuleVO().getDbServerName());
 		map.addValue("db_port", requestVO.getModuleVO().getDbPortNumber());
@@ -271,8 +271,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 
 		String sqlString = "SELECT query_id, query_name, query_app_id, query_type_id, query_string, "
 				+ " query_freq_id, query_status_id, db_server, db_port, db_name, db_password, db_username,"
-				+ " db_id, query_app_token, id_column, admin_email "
-				+ " FROM t_mquery WHERE query_id = :query_id";
+				+ " db_id, query_app_token, id_column, admin_email " + " FROM t_mquery WHERE query_id = :query_id";
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("query_id", requestId);
 
@@ -302,7 +301,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 					moduleVO.setDbUserName(rs.getString(12));
 					moduleVO.setDatabaseVendorId(rs.getString(13));
 					requestVO.setAppToken(rs.getString(14));
-					requestVO.setIdColumn(rs.getString(15));					
+					requestVO.setIdColumn(rs.getString(15));
 					requestVO.setEmailNotification(rs.getString(16));
 					requestVO.setModuleVO(moduleVO);
 				}
@@ -432,13 +431,50 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 	}
 
 	@Override
-	public void updatedLastDate(String queryId) {
-		String sql = "UPDATE t_dquery_update set last_updated_time = :last_updated_time where query_id = :query_id ";
+	public void updatedLastDate(String queryId, int currentSequence) {
+		String sql = "UPDATE t_dquery_update set current_index = :current_index, last_updated_time = :last_updated_time where query_id = :query_id ";
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("query_id", queryId);
+		map.addValue("current_index", currentSequence);
 		map.addValue("last_updated_time", new Date());
 		jdbcOperations.update(sql, map);
-
 	}
-	
+
+	@Override
+	public void insertLastDate(String queryId, int currentSequence) {
+		String sql = "INSERT INTO t_dquery_update(query_id,current_index,last_updated_time ) values (:query_id, :current_index, :last_updated_time)";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("query_id", queryId);
+		map.addValue("current_index", currentSequence);
+		map.addValue("last_updated_time", new Date());
+		jdbcOperations.update(sql, map);
+	}
+
+	@Override
+	public int getCurrentSequenceId(String queryId) {
+		int currentSeqId = 0;
+		String sql = " select current_index from t_dquery_update where query_id = :query_id ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("query_id", queryId);
+		currentSeqId = jdbcOperations.query(sql, map, (rs) -> {
+			return rs.next() ? rs.getInt(1) : 0;
+		});
+
+		return currentSeqId;
+	}
+
+	@Override
+	public String getCurrentIndexForToken(String appToken) {
+		String indexName = null;
+		String sql = " select concat(query_name , \"_\" , current_index) from t_dquery_update inner join t_mquery on t_mquery.query_id = t_dquery_update.query_id "
+				+ " where t_mquery.query_app_token = :appToken ";
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("appToken", appToken);
+		indexName = jdbcOperations.query(sql, map, (rs) -> {
+			return rs.next() ? rs.getString(1) : null;
+		});
+
+		return indexName;
+	}
+
 }

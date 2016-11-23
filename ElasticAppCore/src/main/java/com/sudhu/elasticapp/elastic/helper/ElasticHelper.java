@@ -4,6 +4,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,8 +135,6 @@ public class ElasticHelper {
 				DeleteIndexRequestBuilder deleteIndexRequestBuilder = client.admin().indices().prepareDelete(indexName);
 				DeleteIndexResponse deleteIndexResponse = deleteIndexRequestBuilder.execute().actionGet();
 				acknowledged = deleteIndexResponse.isAcknowledged();
-			} else {
-				throw new ElasticException("No Such Index Exists");
 			}
 		} catch (Exception e) {
 			throw new ElasticException(e);
@@ -168,14 +168,14 @@ public class ElasticHelper {
 		}
 	}
 
-	public boolean createAlias(String indexName, String newIndexName) throws ElasticException {
+	public boolean createAlias(String indexName, String aliasName) throws ElasticException {
 		boolean acknowledged = false;
 		try {
 			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
 					.actionGet();
 			if (existsResponse.isExists()) {
 				IndicesAliasesRequestBuilder aliasBuilder = client.admin().indices().prepareAliases()
-						.addAlias(indexName, newIndexName);
+						.addAlias(indexName, aliasName);
 				IndicesAliasesResponse aliasesResponse = aliasBuilder.execute().actionGet();
 				acknowledged = aliasesResponse.isAcknowledged();
 			} else {
@@ -187,8 +187,27 @@ public class ElasticHelper {
 		return acknowledged;
 	}
 
-	public List<Map<String, String>> doSearchOperation(String indexName, String typeName, SearchCriteria searchCriteria)
-			throws ElasticException {
+	public boolean modifyAlias(String indexName, String newIndexName, String aliasName) throws ElasticException {
+		boolean acknowledged = false;
+		try {
+			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
+					.actionGet();
+			if (existsResponse.isExists()) {
+				IndicesAliasesRequestBuilder aliasBuilder = client.admin().indices().prepareAliases()
+						.removeAlias(indexName, aliasName).addAlias(newIndexName, aliasName);
+				IndicesAliasesResponse aliasesResponse = aliasBuilder.execute().actionGet();
+				acknowledged = aliasesResponse.isAcknowledged();
+			} else {
+				throw new ElasticException("No Such Index Exists");
+			}
+		} catch (Exception e) {
+			throw new ElasticException(e);
+		}
+		return acknowledged;
+	}
+
+	public List<Map<String, String>> doAdvancedSearchOperation(String indexName, String typeName,
+			SearchCriteria searchCriteria) throws ElasticException {
 		List<Map<String, String>> data = new ArrayList<>();
 		try {
 
@@ -334,12 +353,68 @@ public class ElasticHelper {
 				Map<String, String> results = null;
 				for (SearchHit hit : searchResponse.getHits().getHits()) {
 					results = new HashMap<>();
-					for (String key : hit.getSource().keySet()) {
-						results.put(key, hit.getSource().get(key).toString());
+
+					if (searchCriteria.getFields().isEmpty()) {
+						for (String key : hit.getSource().keySet()) {
+							results.put(key, hit.getSource().get(key).toString());
+						}
+					} else {
+						for (String key : hit.getFields().keySet()) {
+							results.put(key, hit.getSource().get(key).toString());
+						}
 					}
+
 					data.add(results);
 				}
 
+			} else {
+				throw new ElasticException("No Such Index Exists");
+			}
+		} catch (Exception e) {
+			throw new ElasticException(e);
+		}
+		return data;
+	}
+
+	public List<Map<String, String>> doSearchOperation(String indexName, String typeName, List<String> fields,
+			String field, boolean wildcard) throws ElasticException {
+		List<Map<String, String>> data = new ArrayList<>();
+		try {
+
+			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
+					.actionGet();
+			if (existsResponse.isExists()) {
+				SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName).setTypes(typeName);
+
+				if (fields.isEmpty()) {
+					searchRequestBuilder.addField("_source");
+				} else {
+					fields.forEach(searchRequestBuilder::addField);
+				}
+				QueryBuilder queryBuilder;
+				if (wildcard) {
+					queryBuilder = QueryBuilders.queryStringQuery("*" + field + "*");
+				} else {
+					queryBuilder = QueryBuilders.queryStringQuery(field);
+				}
+				searchRequestBuilder.setQuery(queryBuilder);
+				SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
+				Map<String, String> results = null;
+				for (SearchHit hit : searchResponse.getHits().getHits()) {
+					results = new HashMap<>();
+
+					if (fields.isEmpty()) {
+						for (String key : hit.getSource().keySet()) {
+							results.put(key, hit.getSource().get(key).toString());
+						}
+					} else {
+						for (String key : hit.getFields().keySet()) {
+							results.put(key, hit.getSource().get(key).toString());
+						}
+					}
+
+					data.add(results);
+				}
 			} else {
 				throw new ElasticException("No Such Index Exists");
 			}
@@ -353,8 +428,12 @@ public class ElasticHelper {
 		ElasticHelper elasticHelper = new ElasticHelper();
 		elasticHelper.init();
 
-		SearchCriteria searchCriteria = new SearchCriteria();
-		List<Map<String, String>> data = elasticHelper.doSearchOperation("testone", "testone", searchCriteria);
+		// SearchCriteria searchCriteria = new SearchCriteria();
+		// List<Map<String, String>> data =
+		// elasticHelper.doAdvancedSearchOperation("testone", "testone",
+		// searchCriteria);
+		List<Map<String, String>> data = elasticHelper.doSearchOperation("testone", "testone", Arrays.asList("_source"),
+				"lewis", true);
 		data.forEach(System.out::println);
 		elasticHelper.destroyConnection();
 	}
