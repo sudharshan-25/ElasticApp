@@ -11,9 +11,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequestBuilder;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
@@ -120,20 +123,23 @@ public class ElasticHelper {
 		}
 	}
 
-	public void deleteType(String indexName, String typeName) throws ElasticException {
+	public boolean deleteType(String indexName) throws ElasticException {
+		boolean acknowledged = false;
 		try {
 
 			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
 					.actionGet();
 			if (existsResponse.isExists()) {
 				DeleteIndexRequestBuilder deleteIndexRequestBuilder = client.admin().indices().prepareDelete(indexName);
-				deleteIndexRequestBuilder.execute().actionGet();
+				DeleteIndexResponse deleteIndexResponse = deleteIndexRequestBuilder.execute().actionGet();
+				acknowledged = deleteIndexResponse.isAcknowledged();
 			} else {
 				throw new ElasticException("No Such Index Exists");
 			}
 		} catch (Exception e) {
 			throw new ElasticException(e);
 		}
+		return acknowledged;
 	}
 
 	public void insertBulkData(List<Map<String, Object>> dataToInsert, String indexName, String typeName,
@@ -160,6 +166,25 @@ public class ElasticHelper {
 		} catch (Exception e) {
 			throw new ElasticException(e);
 		}
+	}
+
+	public boolean createAlias(String indexName, String newIndexName) throws ElasticException {
+		boolean acknowledged = false;
+		try {
+			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
+					.actionGet();
+			if (existsResponse.isExists()) {
+				IndicesAliasesRequestBuilder aliasBuilder = client.admin().indices().prepareAliases()
+						.addAlias(indexName, newIndexName);
+				IndicesAliasesResponse aliasesResponse = aliasBuilder.execute().actionGet();
+				acknowledged = aliasesResponse.isAcknowledged();
+			} else {
+				throw new ElasticException("No Such Index Exists");
+			}
+		} catch (Exception e) {
+			throw new ElasticException(e);
+		}
+		return acknowledged;
 	}
 
 	public List<Map<String, String>> doSearchOperation(String indexName, String typeName, SearchCriteria searchCriteria)
