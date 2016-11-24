@@ -234,7 +234,7 @@ public class ElasticHelper {
 					from = field.getFrom();
 					to = field.getTo();
 					operator = field.getOperator();
-					if (null != value) {
+					if (null != value && null == operator) {
 						if (field.getWildcard()) {
 							queryBuilder.should(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
 						} else {
@@ -275,7 +275,7 @@ public class ElasticHelper {
 					to = field.getTo();
 					operator = field.getOperator();
 
-					if (null != value) {
+					if (null != value && null == operator) {
 						if (field.getWildcard()) {
 							queryBuilder.must(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
 						} else {
@@ -360,7 +360,7 @@ public class ElasticHelper {
 						}
 					} else {
 						for (String key : hit.getFields().keySet()) {
-							results.put(key, hit.getSource().get(key).toString());
+							results.put(key, hit.getFields().get(key).getValue());
 						}
 					}
 
@@ -409,7 +409,7 @@ public class ElasticHelper {
 						}
 					} else {
 						for (String key : hit.getFields().keySet()) {
-							results.put(key, hit.getSource().get(key).toString());
+							results.put(key, hit.getFields().get(key).getValue());
 						}
 					}
 

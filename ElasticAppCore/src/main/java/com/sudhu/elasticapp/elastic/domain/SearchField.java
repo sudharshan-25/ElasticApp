@@ -12,7 +12,7 @@ public class SearchField {
 
 	private String operator;
 
-	private boolean wildcard;
+	private boolean wildcard = true;
 
 	public SearchField() {
 

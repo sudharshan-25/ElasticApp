@@ -47,6 +47,9 @@ public class ElasticAppService {
 	}
 
 	public String getCurrentIndexForToken(String appToken) throws ElasticException {
+		if (appToken == null) {
+			throw new ElasticException("Invalid AppToken");
+		}
 		Optional<String> indexName = Optional.of(elasticAppDAO.getCurrentIndexForToken(appToken));
 		if (!indexName.isPresent()) {
 			throw new ElasticException("Invalid AppToken");
