@@ -26,6 +26,7 @@
 			    	<li><a href="#"><i class="icon-home"></i> Home</a></li>
 			    	<li><a href="#newRequest"><i class="icon-edit"></i> New Request</a></li>
 			    	<li><a href="#search"><i class="icon-search"></i> Search Request</a></li>
+			    	<li><a href="#searchData"><i class="icon-search"></i> Search Data</a></li>
 			    	<li>&nbsp;</li>
 			    	<li>&nbsp;</li>
 			    	<li><a class="navbar-brand" href="#">${sessionScope.userVO.userName}</a></li>
@@ -47,6 +48,8 @@
 		<script type="text/javascript" src="${pageContext.request.contextPath}/script/controller/SummaryController.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/script/controller/SearchController.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/script/controller/UpdateController.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/script/controller/SearchDataController.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/script/service/RequestService.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/script/service/SearchService.js"></script>
 	</body>
 </html>

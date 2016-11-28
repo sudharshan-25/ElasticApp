@@ -36,6 +36,7 @@ import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sudhu.elasticapp.common.helper.GeneralUtils;
 import com.sudhu.elasticapp.elastic.domain.SearchCriteria;
 import com.sudhu.elasticapp.elastic.domain.SearchField;
 import com.sudhu.elasticapp.elastic.exception.ElasticException;
@@ -92,9 +93,10 @@ public class ElasticHelper {
 					builder.startObject(column.getColumnName());
 
 					analyzer = analyserMap.get(column.getQueryAnalyserType()).getKey();
-					dataType = dataTypeMap.get(column.getQueryDataType()).getKey();
+					dataType = dataTypeMap.get(column.getQueryDataType()).getKey();					
 
 					if (column.getAnalysed()) {
+
 						builder.field("index", "analyzed");
 						if ("string".equalsIgnoreCase(dataType)) {
 							builder.field("analyzer", analyzer);
@@ -197,9 +199,7 @@ public class ElasticHelper {
 						.removeAlias(indexName, aliasName).addAlias(newIndexName, aliasName);
 				IndicesAliasesResponse aliasesResponse = aliasBuilder.execute().actionGet();
 				acknowledged = aliasesResponse.isAcknowledged();
-			} else {
-				throw new ElasticException("No Such Index Exists");
-			}
+			} 
 		} catch (Exception e) {
 			throw new ElasticException(e);
 		}
@@ -234,11 +234,11 @@ public class ElasticHelper {
 					from = field.getFrom();
 					to = field.getTo();
 					operator = field.getOperator();
-					if (null != value && null == operator) {
+					if (GeneralUtils.isValidString(value) && !GeneralUtils.isValidString(operator)) {
 						if (field.getWildcard()) {
-							queryBuilder.should(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
+							queryBuilder.should(QueryBuilders.queryStringQuery("*" + value + "*").defaultField(fieldName));
 						} else {
-							queryBuilder.should(QueryBuilders.termQuery(fieldName, value));
+							queryBuilder.should(QueryBuilders.queryStringQuery(value).defaultField(fieldName));
 						}
 					} else if (null != from && null == to) {
 						queryBuilder.should(QueryBuilders.rangeQuery(fieldName).from(from));
@@ -275,11 +275,11 @@ public class ElasticHelper {
 					to = field.getTo();
 					operator = field.getOperator();
 
-					if (null != value && null == operator) {
+					if (GeneralUtils.isValidString(value) && !GeneralUtils.isValidString(operator)) {
 						if (field.getWildcard()) {
-							queryBuilder.must(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
+							queryBuilder.must(QueryBuilders.queryStringQuery("*" + value + "*").defaultField(fieldName));
 						} else {
-							queryBuilder.must(QueryBuilders.termQuery(fieldName, value));
+							queryBuilder.must(QueryBuilders.queryStringQuery(value).defaultField(fieldName));
 						}
 					} else if (null != from && null == to) {
 						queryBuilder.must(QueryBuilders.rangeQuery(fieldName).from(from));
@@ -315,11 +315,11 @@ public class ElasticHelper {
 					to = field.getTo();
 					operator = field.getOperator();
 
-					if (null != value && operator == null) {
+					if (GeneralUtils.isValidString(value) && !GeneralUtils.isValidString(operator)) {
 						if (field.getWildcard()) {
-							queryBuilder.mustNot(QueryBuilders.wildcardQuery(fieldName, "*" + value + "*"));
+							queryBuilder.mustNot(QueryBuilders.queryStringQuery("*" + value + "*").defaultField(fieldName));
 						} else {
-							queryBuilder.mustNot(QueryBuilders.termQuery(fieldName, value));
+							queryBuilder.mustNot(QueryBuilders.queryStringQuery(value).defaultField(fieldName));
 						}
 					} else if (null != from && null == to) {
 						queryBuilder.mustNot(QueryBuilders.rangeQuery(fieldName).from(from));
@@ -349,6 +349,7 @@ public class ElasticHelper {
 				}
 
 				searchRequestBuilder.setQuery(queryBuilder);
+				searchRequestBuilder.setSize(searchCriteria.getSize());
 				SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
 				Map<String, String> results = null;
 				for (SearchHit hit : searchResponse.getHits().getHits()) {

@@ -13,13 +13,11 @@ elasticApp.config(function($routeProvider) {
 		controller : 'elasticAppController'
 	})
 
-	// route for the about page
 	.when('/newRequest', {
 		templateUrl : 'static/newRequest.html',
 		controller : 'newRequestController'
 	})
 
-	// route for the contact page
 	.when('/search', {
 		templateUrl : 'static/searchRequest.html',
 		controller : 'searchController'
@@ -34,7 +32,11 @@ elasticApp.config(function($routeProvider) {
 		templateUrl : 'static/updateRequest.html',
 		controller : 'updateRequestController'
 	})
-	
+
+	.when('/searchData',{
+		templateUrl : 'static/dataSearch.html',
+		controller : 'searchDataController'
+})
 	;
 });
 

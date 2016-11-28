@@ -1,0 +1,229 @@
+<div id="homeContainer">
+	<div id="searchDataForm" ng-controller="searchDataController">
+		<div id="selection" class="" data-toggle="buttons">
+			
+			<label for="selection" class=""> 
+				<input type="radio" name="selection" ng-model="selectedSearch" value="simple" ng-change="searched = false" >
+				Simple </label>
+			<label for="selection" class="">
+ 				<input type="radio" name="selection" ng-model="selectedSearch" value="advanced" ng-change="searched = false">
+ 				 Advanced</label>
+		</div>
+		<div ng-show="selectedSearch == 'simple'">
+			<form name="simpleSearchForm">
+				<p>
+					<span class="headerLabel"> App Token</span>
+                    <span class="headerValue">
+                    	<input name="appToken" required="required" ng-model="simpleSearchCriteria.appToken">
+                    </span>
+				</p>
+				<p>
+					<span class="headerLabel"> Search Term</span>
+                    <span class="headerValue">
+                    	<input name="appToken" required="required" ng-model="simpleSearchCriteria.term">
+                    </span>
+				</p>
+				<p>
+					<span class="headerLabel"> Fields (comma seperated)</span>
+                    <span class="headerValue">
+                    	<input name="appToken" ng-model="simpleSearchCriteria.fields">
+                    </span>
+				</p>
+				<p>
+					<span class="headerLabel"> Wildcard search Needed</span>
+                    <span class="headerValue">
+                    	<label class="radio">
+                    		<input type="radio" ng-model="simpleSearchCriteria.wildcard" value="true" name="wildcard">True
+                    		
+                    	</label>
+                    	<label class="radio">
+                    		<input type="radio" ng-model="simpleSearchCriteria.wildcard" value="true" name="wildcard">False
+                    	</label>
+                    </span>
+				</p>
+				<div class="centeredButton">
+					<button class="btn button" type="button" ng-click="simpleSearch('simpleSearchForm')">Search Data</button>
+	                <button class="btn button" type="reset" >Clear</button>			                
+	            </div>
+			</form>			
+		</div>
+		
+		<div ng-show="selectedSearch == 'advanced'">
+			<form name="advancedSearchForm">
+				<div class="linedItem">
+					<span class="headerLabel"> App Token</span>
+                    <span class="headerValue">
+                    	<input name="appToken" required="required" ng-model="searchCriteria.appToken">
+                    </span>
+                    
+				</div>
+				<div class="linedItem">
+					<span class="headerLabel"> Fields (comma seperated)</span>
+                    <span class="headerValue">
+                    	<input name="appToken" ng-model="searchCriteria.resultField">
+                    </span>
+                    
+				</div>
+				<div class="linedItem">
+					<span class="headerLabel"> Results Count</span>
+                    <span class="headerValue">
+                    	<input name="size" ng-model="searchCriteria.size" type="number">
+                    </span>
+                    
+				</div>
+				<div class="linedItem">
+					<span class="headerLabel"> Must Match Conditions</span>
+					<span class="headerValue">
+						<button class="btn button" ng-click="addSearchFields(searchCriteria.allMatch)">Add a Search Criteria</button>
+					</span>
+					
+                    
+				</div>
+				<div class="linedItem">
+					
+					<table ng-show="searchCriteria.allMatch.length > 0" class="headerLabel">
+						<thead>
+							<tr>
+								<th>Field name</th>
+								<th>Field value</th>
+								<th>Value Range From </th>
+								<th>Value Range To</th>
+								<th>Value operator</th>
+								<th>Wildcard</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="searchField in searchCriteria.allMatch">
+								<td><input name="name" ng-model="searchField.name" required="required" class="searchFields"></td>
+								<td><input name="value" ng-model="searchField.value" ng-required="!searchField.from && !searchField.to && !searchField.operator" 
+										class="searchFields"></td>
+								<td><input name="from" ng-model="searchField.from" class="searchFields"></td>
+								<td><input name="to" ng-model="searchField.to" class="searchFields"></td>
+								<td>	<select ng-model="searchField.operator" class="searchFields">
+											<option value="">Select One</option>
+											<option value="gt"> &lt; </option>
+											<option value="ge"> &lt;= </option>
+											<option value="lt"> &gt; </option>
+											<option value="le"> &gt;= </option>
+										</select>
+								</td>
+								<td>
+									<input type="checkbox" ng-model="searchField.wildcard" style="width: 25px !important;">
+								</td>
+								<td>
+									<button class="btn button" ng-click="removeSearchFields(searchCriteria.allMatch, searchField)">Remove</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+				</div>
+				
+				<div class="linedItem">
+					<span class="headerLabel"> No Match Conditions</span>
+					<span class="headerValue">
+						<button class="btn button" ng-click="addSearchFields(searchCriteria.noMatch)">Add a Search Criteria</button>
+					</span>
+					
+				</div>
+				<div class="linedItem">
+					
+					<table ng-show="searchCriteria.noMatch.length > 0" class="headerLabel">
+						<thead>
+							<tr>
+								<th>Field name</th>
+								<th>Field value</th>
+								<th>Value Range From </th>
+								<th>Value Range To</th>
+								<th>Value operator</th>
+								<th>Wildcard</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="searchField in searchCriteria.noMatch">
+								<td><input name="name" ng-model="searchField.name" required="required" class="searchFields"></td>
+								<td><input name="value" ng-model="searchField.value" required="required" class="searchFields"></td>
+								<td><input name="from" ng-model="searchField.from" class="searchFields"></td>
+								<td><input name="to" ng-model="searchField.to" class="searchFields"></td>
+								<td>	<select ng-model="searchField.operator" class="searchFields">
+											<option value="">Select One</option>
+											<option value="gt"> &lt; </option>
+											<option value="ge"> &lt;= </option>
+											<option value="lt"> &gt; </option>
+											<option value="le"> &gt;= </option>
+										</select>
+								</td>
+								<td>
+									<input type="checkbox" ng-model="searchField.wildcard" style="width: 25px !important;">
+								</td>
+								<td>
+									<button class="btn button" ng-click="removeSearchFields(searchCriteria.noMatch, searchField)">Remove</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+				</div>
+				
+				<div class="linedItem">
+					<span class="headerLabel"> Any Match Conditions</span>
+					<span class="headerValue">
+						<button class="btn button" ng-click="addSearchFields(searchCriteria.fewMatch)">Add a Search Criteria</button>
+					</span>
+					
+				</div>
+				<div class="linedItem">
+					
+					<table ng-show="searchCriteria.fewMatch.length > 0" class="headerLabel">
+						<thead>
+							<tr>
+								<th>Field name</th>
+								<th>Field value</th>
+								<th>Value Range From </th>
+								<th>Value Range To</th>
+								<th>Value operator</th>
+								<th>Wildcard</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="searchField in searchCriteria.fewMatch">
+								<td><input name="name" ng-model="searchField.name" required="required" class="searchFields"></td>
+								<td><input name="value" ng-model="searchField.value" required="required" class="searchFields"></td>
+								<td><input name="from" ng-model="searchField.from" class="searchFields"></td>
+								<td><input name="to" ng-model="searchField.to" class="searchFields"></td>
+								<td>	<select ng-model="searchField.operator" class="searchFields">
+											<option value="">Select One</option>
+											<option value="gt"> &lt; </option>
+											<option value="ge"> &lt;= </option>
+											<option value="lt"> &gt; </option>
+											<option value="le"> &gt;= </option>
+										</select>
+								</td>
+								<td>
+									<input type="checkbox" ng-model="searchField.wildcard" style="width: 25px !important;">
+								</td>
+								<td>
+									<button class="btn button" ng-click="removeSearchFields(searchCriteria.fewMatch, searchField)">Remove</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+				</div>
+				<div class="centeredButton">
+					<button class="btn button" type="button" ng-click="advancedSearch('advancedSearchForm')">Search Data</button>
+	                <button class="btn button" type="reset" >Clear</button>			                
+	            </div>
+			</form>			
+		</div>
+		
+		
+		<div ng-show="searched">
+			<section>
+				<h1>Result</h1>
+				<pre id="result"></pre>
+			</section>
+		</div>
+		
+	</div>
+</div>

@@ -1,9 +1,13 @@
 package com.sudhu.elasticapp.elastic.domain;
 
+import javax.validation.constraints.NotNull;
+
 public class SearchField {
 
+	@NotNull
 	private String name;
 
+	@NotNull
 	private String value;
 
 	private String from;
@@ -87,7 +91,7 @@ public class SearchField {
 	 * @return the operator
 	 */
 	public String getOperator() {
-		return operator;
+		return  operator;
 	}
 
 	/**

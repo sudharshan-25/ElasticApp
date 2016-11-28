@@ -99,7 +99,6 @@
 				                   				<td width="25%">Elastic DataType</td>
 				                   				<td width="10%">Analyzed</td>
 				                   				<td width="10%">Analyzer Type</td>
-				                   				<td width="5%">Modified Date Column </td>
 				                   			</tr>
 				                   		</thead>
 				                   		<tbody>	                   
@@ -118,10 +117,6 @@
 														<option value="">Select One</option>
 														<option ng-repeat="domain in requestForm.analyserList" value="{{domain.id}}">{{domain.value}}</option>
 													</select>
-												</td>
-												<td>
-													<input type="radio" name="modifiedColumn" ng-model="requestVO.modifiedColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.modifiedColumn" required="required" disabled="disabled">
 												</td>
 											</tr>	                   			
 				                   		</tbody>

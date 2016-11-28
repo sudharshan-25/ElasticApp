@@ -89,9 +89,9 @@ public class DBConnectionHelper {
 
 			query = query.toLowerCase();
 
-			if (query.contains("limit")) {
+			if (query.contains("limit") && connectionVO.getDbType().equals(com.mysql.cj.jdbc.Driver.class)) {
 				query = query.replaceAll("limit\\s*\\d+", " limit 1");
-			} else {
+			} else if (connectionVO.getDbType().equals(com.microsoft.sqlserver.jdbc.SQLServerDriver.class)){
 				query = query.replace("select", "select top 1 ");
 			}
 

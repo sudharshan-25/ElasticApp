@@ -3,6 +3,7 @@ package com.sudhu.elasticapp.module.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -154,7 +155,10 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 					+ " :db_connection_url, :db_id, :added_by, :added_on  )";
 			map.addValue("added_on", Calendar.getInstance().getTime());
 			map.addValue("added_by", "1");
-			String appToken = requestVO.getQueryName() + ":" + requestId;
+			
+			String queryName = requestVO.getQueryName();
+			
+			String appToken = Base64.getEncoder().encodeToString(queryName.getBytes());
 			requestVO.setAppToken(appToken);
 			map.addValue("query_app_token", appToken);
 			requestVO.setStatusId("1");

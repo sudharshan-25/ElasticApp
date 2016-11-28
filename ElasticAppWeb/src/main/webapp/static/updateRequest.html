@@ -70,18 +70,15 @@
 		                    		<option value="">Select One</option>
 		                    		<option ng-repeat="domain in requestForm.availableProjects" value="{{domain.id}}">{{domain.key}}</option>
 		                    	</select>
-		                    </span>
-		                    <span class="headerValue">
-		                    	<label>Used as Index Name in Elastic Searh Engine</label>
-		                    </span>
+		                    </span>		                    
 		                </p>
 		                <p>
 		                    <span class="headerLabel">Query Name : </span>
 		                    <span class="headerValue">
 		                        <input id="queryName" class="mandatory" required="required" ng-model="requestVO.queryName" disabled="disabled"/>
 		                    </span>
-		                    <span class="headerValue">
-		                    	<label>Used as Type Name in Elastic Searh Engine</label>
+		                    <span class="headerValue help-inline">
+		                    	Used as Alias Name in Elastic Search Engine
 		                    </span>
 		                </p>
 		                <p>
@@ -89,8 +86,8 @@
 		                    <span class="headerValue">
 		                        <input id="appToken" class="mandatory" required="required" ng-model="requestVO.appToken" disabled="disabled"/>
 		                    </span>
-		                    <span class="headerValue">
-		                    	<label>Used as Type Name in Elastic Searh Engine</label>
+		                    <span class="headerValue help-inline">
+		                    	Use this as token for searching here.
 		                    </span>
 		                </p>
 		                <p>
@@ -98,8 +95,8 @@
 		                    <span class="headerValue">
 		                        <textarea id="query" required="required" rows="5" ng-model="requestVO.query" cols="30" ng-change="columnMapped = false; queryChanged = true"></textarea>
 		                    </span>
-		                     <span class="headerValue">
-		                    	<label>Changing query needs reindexing elastic Search</label>
+		                     <span class="headerValue help-inline">
+		                    	Changing query needs re-indexing elastic Search
 		                    </span>
 		                </p>
 		                <div ng-show="requestVO.columnMapping.length > 0 && columnMapped" style="margin-bottom: 10px;">
@@ -113,12 +110,11 @@
 				                   				<td width="25%">Elastic DataType</td>
 				                   				<td width="10%">Analyzed</td>
 				                   				<td width="10%">Analyzer Type</td>
-				                   				<td width="5%">Modified Date Column </td>
 				                   			</tr>
 				                   		</thead>
 				                   		<tbody>	                   
 											<tr ng-repeat="column in requestVO.columnMapping">
-												<td><input type="radio" name="idColumn" ng-model="requestVO.idColumn" value="{{column.columnName}}" 
+												<td><input type="radio" ng-model="requestVO.idColumn" value="{{column.columnName}}"
 														ng-checked="requestVO.idColumn" required="required" ng-disabled="!columnMapped || !queryChanged"/> </td>
 												<td>{{column.columnName}}</td>
 												<td><select name="queryDataType" required="required" ng-model="column.queryDataType" ng-disabled="!columnMapped || !queryChanged">
@@ -127,7 +123,8 @@
 													</select>
 												</td>
 												<td>
-													<input type="checkbox" ng-checked="column.analysed" ng-model="column.analysed" ng-disabled="!columnMapped || !queryChanged"/>
+													<input type="checkbox" ng-checked="column.analysed" ng-required = "requestVO.idColumn == column.columnName" 
+														ng-model="column.analysed" ng-disabled="!columnMapped || !queryChanged"/>
 												</td>
 												<td><select name="queryAnalyserType" ng-model="column.queryAnalyserType" ng-required="column.analysed" ng-disabled="(!columnMapped || !queryChanged) || !column.analysed">
 														<option value="">Select One</option>

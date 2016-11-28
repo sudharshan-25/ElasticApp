@@ -119,12 +119,13 @@ table {
     border-collapse: collapse;
 }
 
-table, td, th {
+tr, td, th {
     border: 1px solid black;
 }
 
-td{
+td, th{
 	padding-left: 10px;
+	padding-right: 5px;
 }
 
 div.centeredButton{
@@ -133,4 +134,18 @@ div.centeredButton{
 
 div#searchResults{
 	height :300px !important;
+}
+
+pre#result{
+	width: 600px;
+	height: 300px;
+	overflow: auto;
+}
+
+.searchFields{
+	width : 150px !important;
+}
+div.linedItem{
+	padding-bottom: 5px;
+	padding-top: 5px;
 }

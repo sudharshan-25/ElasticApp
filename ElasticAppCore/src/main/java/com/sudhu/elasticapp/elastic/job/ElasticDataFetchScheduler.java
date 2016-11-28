@@ -41,7 +41,7 @@ public class ElasticDataFetchScheduler {
 			ElasticSearchRequestFetcher fetcher = null;
 			switch (domainVO.getId()) {
 			case "1":
-				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 5, TimeUnit.MINUTES, elasticAppDAO,
+				fetcher = new ElasticSearchRequestFetcher(domainVO.getId(), 45, TimeUnit.MINUTES, elasticAppDAO,
 						elasticHelper);
 				executor.execute(fetcher);
 				break;

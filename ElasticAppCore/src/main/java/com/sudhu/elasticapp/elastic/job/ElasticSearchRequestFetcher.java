@@ -39,7 +39,7 @@ public class ElasticSearchRequestFetcher extends Thread {
 		executor = Executors.newScheduledThreadPool(requests.size());
 		for (RequestVO requestVO : requests) {
 			ElasticSearchDataFetcher fetcher = new ElasticSearchDataFetcher(requestVO, elasticHelper, elasticAppDAO);
-			//executor.scheduleAtFixedRate(fetcher, 0, time, timeUnit);
+			executor.scheduleAtFixedRate(fetcher, 0, time, timeUnit);
 		}
 
 	}

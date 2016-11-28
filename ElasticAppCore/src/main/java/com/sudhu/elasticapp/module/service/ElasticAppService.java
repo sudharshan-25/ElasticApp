@@ -2,11 +2,11 @@ package com.sudhu.elasticapp.module.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sudhu.elasticapp.common.helper.GeneralUtils;
 import com.sudhu.elasticapp.elastic.exception.ElasticException;
 import com.sudhu.elasticapp.module.dao.ElasticAppDAO;
 import com.sudhu.elasticapp.module.domain.RequestHeaderVO;
@@ -50,10 +50,11 @@ public class ElasticAppService {
 		if (appToken == null) {
 			throw new ElasticException("Invalid AppToken");
 		}
-		Optional<String> indexName = Optional.of(elasticAppDAO.getCurrentIndexForToken(appToken));
-		if (!indexName.isPresent()) {
+		String indexName = elasticAppDAO.getCurrentIndexForToken(appToken);
+		if (!GeneralUtils.isValidString(indexName)) {
 			throw new ElasticException("Invalid AppToken");
 		}
-		return indexName.get();
+		return indexName;
 	}
+		
 }

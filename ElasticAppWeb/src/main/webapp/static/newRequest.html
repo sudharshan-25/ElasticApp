@@ -102,13 +102,12 @@
 				                   				<td width="25%">Elastic DataType</td>
 				                   				<td width="10%">Analyzed</td>
 				                   				<td width="10%">Analyzer Type</td>
-				                   				<td width="5%">Modified Date Column </td>
 				                   			</tr>
 				                   		</thead>
 				                   		<tbody>	                   
 											<tr ng-repeat="column in requestVO.columnMapping">
 												<td><input type="radio" name="idColumn" ng-model="requestVO.idColumn" value="{{column.columnName}}" 
-														ng-checked="requestVO.idColumn" required="required"/> </td>
+														ng-checked="requestVO.idColumn" required="required" /> </td>
 												<td>{{column.columnName}}</td>
 												<td><select name="queryDataType" required="required" ng-model="column.queryDataType">
 														<option value="">Select One</option>
@@ -116,7 +115,8 @@
 													</select>
 												</td>
 												<td>
-													<input type="checkbox" ng-checked="column.analysed" ng-model="column.analysed" />
+													<input type="checkbox" ng-checked="column.analysed"
+														ng-model="column.analysed" ng-required = "requestVO.idColumn == column.columnName"/>
 												</td>
 												<td><select name="queryAnalyserType" ng-required="column.analysed" ng-model="column.queryAnalyserType" ng-show="column.analysed">
 														<option value="">Select One</option>

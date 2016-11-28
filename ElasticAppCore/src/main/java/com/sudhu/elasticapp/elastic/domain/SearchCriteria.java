@@ -1,26 +1,31 @@
 package com.sudhu.elasticapp.elastic.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.constraints.NotNull;
+
+import com.sudhu.elasticapp.common.helper.GeneralUtils;
 
 public class SearchCriteria {
 
-	@JsonProperty(required = true)
+	@NotNull
 	private String appToken;
 
-	private long size = 10;
+	private int size = 10;
 
 	private long pageNumber = 1;
+
+	private String resultField;
+
+	private List<String> fields = new ArrayList<>();
 
 	private List<SearchField> allMatch = new ArrayList<>();
 
 	private List<SearchField> noMatch = new ArrayList<>();
 
 	private List<SearchField> fewMatch = new ArrayList<>();
-
-	private List<String> fields = new ArrayList<>();
 
 	/**
 	 * @return the appToken
@@ -40,7 +45,7 @@ public class SearchCriteria {
 	/**
 	 * @return the size
 	 */
-	public long getSize() {
+	public int getSize() {
 		return size;
 	}
 
@@ -48,7 +53,7 @@ public class SearchCriteria {
 	 * @param size
 	 *            the size to set
 	 */
-	public void setSize(long size) {
+	public void setSize(int size) {
 		this.size = size;
 	}
 
@@ -113,9 +118,27 @@ public class SearchCriteria {
 	}
 
 	/**
+	 * @return the resultField
+	 */
+	public String getResultField() {
+		return resultField;
+	}
+
+	/**
+	 * @param resultField
+	 *            the resultField to set
+	 */
+	public void setResultField(String resultField) {
+		this.resultField = resultField;
+	}
+
+	/**
 	 * @return the fields
 	 */
 	public List<String> getFields() {
+		if (GeneralUtils.isValidString(resultField)) {
+			fields = Arrays.asList(resultField.split(","));
+		}
 		return fields;
 	}
 
