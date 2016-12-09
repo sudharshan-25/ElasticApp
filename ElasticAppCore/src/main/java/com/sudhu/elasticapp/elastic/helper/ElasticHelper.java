@@ -206,9 +206,9 @@ public class ElasticHelper {
 		return acknowledged;
 	}
 
-	public List<Map<String, String>> doAdvancedSearchOperation(String indexName, String typeName,
+	public List<Map<String, Object>> doAdvancedSearchOperation(String indexName, String typeName,
 			SearchCriteria searchCriteria) throws ElasticException {
-		List<Map<String, String>> data = new ArrayList<>();
+		List<Map<String, Object>> data = new ArrayList<>();
 		try {
 
 			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
@@ -351,13 +351,13 @@ public class ElasticHelper {
 				searchRequestBuilder.setQuery(queryBuilder);
 				searchRequestBuilder.setSize(searchCriteria.getSize());
 				SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
-				Map<String, String> results = null;
+				Map<String, Object> results = null;
 				for (SearchHit hit : searchResponse.getHits().getHits()) {
 					results = new HashMap<>();
 
 					if (searchCriteria.getFields().isEmpty()) {
 						for (String key : hit.getSource().keySet()) {
-							results.put(key, hit.getSource().get(key).toString());
+							results.put(key, hit.getSource().get(key));
 						}
 					} else {
 						for (String key : hit.getFields().keySet()) {
@@ -377,9 +377,9 @@ public class ElasticHelper {
 		return data;
 	}
 
-	public List<Map<String, String>> doSearchOperation(String indexName, String typeName, List<String> fields,
+	public List<Map<String, Object>> doSearchOperation(String indexName, String typeName, List<String> fields,
 			String field, boolean wildcard) throws ElasticException {
-		List<Map<String, String>> data = new ArrayList<>();
+		List<Map<String, Object>> data = new ArrayList<>();
 		try {
 
 			IndicesExistsResponse existsResponse = client.admin().indices().prepareExists(indexName).execute()
@@ -400,13 +400,13 @@ public class ElasticHelper {
 				}
 				searchRequestBuilder.setQuery(queryBuilder);
 				SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
-				Map<String, String> results = null;
+				Map<String, Object> results = null;
 				for (SearchHit hit : searchResponse.getHits().getHits()) {
 					results = new HashMap<>();
 
 					if (fields.isEmpty()) {
 						for (String key : hit.getSource().keySet()) {
-							results.put(key, hit.getSource().get(key).toString());
+							results.put(key, hit.getSource().get(key));
 						}
 					} else {
 						for (String key : hit.getFields().keySet()) {
@@ -433,7 +433,7 @@ public class ElasticHelper {
 		// List<Map<String, String>> data =
 		// elasticHelper.doAdvancedSearchOperation("testone", "testone",
 		// searchCriteria);
-		List<Map<String, String>> data = elasticHelper.doSearchOperation("testone", "testone", Arrays.asList("_source"),
+		List<Map<String, Object>> data = elasticHelper.doSearchOperation("testone", "testone", Arrays.asList("_source"),
 				"lewis", true);
 		data.forEach(System.out::println);
 		elasticHelper.destroyConnection();
