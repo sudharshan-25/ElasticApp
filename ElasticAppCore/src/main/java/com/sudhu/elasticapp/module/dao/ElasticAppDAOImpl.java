@@ -470,7 +470,7 @@ public class ElasticAppDAOImpl implements ElasticAppDAO {
 	@Override
 	public String getCurrentIndexForToken(String appToken) {
 		String indexName = null;
-		String sql = " select concat(query_name , \"_\" , current_index) from t_dquery_update inner join t_mquery on t_mquery.query_id = t_dquery_update.query_id "
+		String sql = " select concat(query_name , '_' , current_index) from t_dquery_update inner join t_mquery on t_mquery.query_id = t_dquery_update.query_id "
 				+ " where t_mquery.query_app_token = :appToken ";
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("appToken", appToken);
