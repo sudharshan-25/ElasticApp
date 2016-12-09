@@ -1,5 +1,6 @@
 package com.sudhu.elasticapp.home.controller;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ public class RequestSearchController {
 			@RequestParam(value = "fields", required = false, defaultValue = "") String fields,
 			@RequestParam(value = "wildcard", required = false, defaultValue = "false") boolean wildcard) {
 		AbstractResponseVO responseVO = new AbstractResponseVO();
-		List<Map<String, String>> data = new ArrayList<>();
+		List<Map<String, Object>> data = new ArrayList<>();
 		try {
 			String indexName = requestService.getCurrentIndexForToken(appToken);
 			List<String> searchFields = null;
@@ -56,9 +57,9 @@ public class RequestSearchController {
 	@RequestMapping(value = "/advancedSearch")
 	public ResponseEntity<AbstractResponseVO> fetchAdvancedSearch(@RequestBody SearchCriteria searchCriteria) {
 		AbstractResponseVO responseVO = new AbstractResponseVO();
-		List<Map<String, String>> data = new ArrayList<>();
+		List<Map<String, Object>> data = new ArrayList<>();
 		try {
-			String appToken = searchCriteria.getAppToken();
+			String appToken = URLDecoder.decode(searchCriteria.getAppToken(), "UTF-8");
 			String indexName = requestService.getCurrentIndexForToken(appToken);
 			data = elasticHelper.doAdvancedSearchOperation(indexName, indexName, searchCriteria);
 			responseVO.setData(data);
